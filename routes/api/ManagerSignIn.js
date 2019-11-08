@@ -9,18 +9,13 @@ const router = require("express").Router();
 |*  SETS UP API ROUTES FOR COLLECTIONNAME *|
 |******************************************/
 // Imports in controller for collectionName
-const collectionNameController = require("../../controllers/HerpestinaeController.js");
+const ManagerHerpestinaeController = require("../../controllers/ManagerController.js");
 
-// Matches with "/api/collectionName" this is defined in "../index.js"
+// Matches with "/api/account" this is defined in "../index.js"
 router.route("/")  
-  .get(collectionNameController.findAll)
-  // .post(collectionNameController.create);
+  .get(ManagerHerpestinaeController.findAll)
+  .post(ManagerHerpestinaeController.findLogin)
 
-// Matches with "/api/collectionName/:id" this is defined in "../index.js"
-// router.route("/:id")
-//   .get(collectionNameController.findById)
-//   .put(collectionNameController.update)
-//   .delete(collectionNameController.remove);
 
 /***********|
 |* EXPORTS *| 
