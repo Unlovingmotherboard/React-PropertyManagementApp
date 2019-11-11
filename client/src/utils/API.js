@@ -8,5 +8,9 @@ export default {
 
   tenantSignUp: function(formData) {
     return axios.post("/api/account/signUp", formData);
+  },
+
+  managerSignUp: function(formData) {
+    return axios.post("/api/account/manager/signUp", formData);
   }
 };
