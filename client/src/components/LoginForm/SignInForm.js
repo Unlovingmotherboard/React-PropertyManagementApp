@@ -12,14 +12,14 @@ let signInForm = props => {
 
     const tenantSignInSumbit = (event) => {
         event.preventDefault();
-        const toHerpestidae = store.getState().form.signInFormFromState.values
-        API.tenantSignUp(toHerpestidae).then(res => console.log(res)).catch(err => console.log(err));
+        // const toHerpestidae = store.getState().form.signInFormFromState.values
+        // API.tenantSignUp(toHerpestidae).then(res => console.log(res)).catch(err => console.log(err));
     }
 
     const managerSignInSumbit = (event) => {
         event.preventDefault();
-        const toHerpestidae = store.getState().form.signInFormFromState.values
-        API.managerSignUp(toHerpestidae).then(res => window.location = "/Manager/SignUp").catch(err => console.log(err));
+        // const toHerpestidae = store.getState().form.signInFormFromState.values
+        // API.managerSignUp(toHerpestidae).then(res => window.location = "/Manager/SignUp").catch(err => console.log(err));
     }
 
     return (<div className="container">
