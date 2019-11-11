@@ -1,12 +1,17 @@
-import React from 'react';
-import {render} from 'react-dom';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import App from "./App";
+import LandingPageApp from "./landingPageApp";
+import ManagerPageApp from "./managerPageApp";
+import TenantPageApp from "./tenantPageApp";
 
-//Store --> Globalized State
+import store from "./redux/store";
 
-//ACTION
+const checkIfLoggedIn = store.getState().loggedReducer;
+console.log(store.getState());
+console.log(store.getState().loggedReducer);
 
-//REDUCER
-
-
-render(<App />, document.getElementById('root'));
+ReactDOM.render(<Provider store={store}> {checkIfLoggedIn ? <TenantPageApp /> : <LandingPageApp /> } </Provider>,
+    document.getElementById("root")
+  );

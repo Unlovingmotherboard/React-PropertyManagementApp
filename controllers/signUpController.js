@@ -18,6 +18,8 @@ const CollectionNameController = {
 
     create: function (req, res, ) {
         const { body } = req;
+        console.log(body);
+        debugger;
         const {
             firstName,
             lastName,

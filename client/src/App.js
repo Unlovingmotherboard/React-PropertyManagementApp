@@ -1,14 +1,11 @@
-import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import React from 'react';
 
-class App extends Component {
-  render() {
-    return <Router forceRefresh={!'pushState' in window.history}>
-      <div>
-        Hi! :D
-      </div>
-    </Router>
-  }
-};
+function App() {
+  return(
+    <div className="App">
+        <h1>Hello! :D</h1>
+    </div>
+  )
+}
 
 export default App;
