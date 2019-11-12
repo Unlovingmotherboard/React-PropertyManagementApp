@@ -13,7 +13,7 @@ let signUpForm = props => {
   const tenantSignUpSumbit = (event) => {
     event.preventDefault();
     const toHerpestidae = store.getState().form.signUpFormFromState.values
-    API.tenantSignUp(toHerpestidae).then(res => window.location = "/SignIn").catch(err => console.log(err));
+    API.tenantSignUp(toHerpestidae).then(res => window.location.href = "/SignIn").catch(err => console.log(err));
   }
 
   const managerSignUpSumbit = (event) => {
