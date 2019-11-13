@@ -1,41 +1,53 @@
 import { combineReducers } from "redux";
 import { reducer as formReducer } from 'redux-form';
+import { FROM_ACTION_LOGIN, FROM_NAVBAR_LOGOUT } from './actions';
 
-const loggedReducer = function(state = false, action) {
-  switch (action) {
-    case "CLEAR_ADD_FORM":
+const initialState = {
+    token: null,
+    managerORtenant: null
+};
+
+const loggedReducer = function(state = initialState, action) {
+  switch (action.type) {
+    case FROM_ACTION_LOGIN:
       
       return {
         ...state,
-        currentItem: {
-          text: "",
-          key: ""
+          token: action.fromLStoken,
+          managerORtenant: action.fromLStype
+      }
+
+      case FROM_NAVBAR_LOGOUT:
+        return {
+          ...state,
+          token: "",
+          managerORtenant: ""
         }
-      };
     default:
       return state;
   }
 };
 
-const managerORtenantReducer = function(state = true, action) {
-  switch (action) {
-    case "CLEAR_ADD_FORM":
+
+
+// const managerORtenantReducer = function(state = initialState.loggedIn.managerORtenant, action) {
+//   switch (action) {
+//     case "CLEAR_ADD_FORM":
       
-      return {
-        ...state,
-        currentItem: {
-          text: "",
-          key: ""
-        }
-      };
-    default:
-      return state;
-  }
-};
+//       return {
+//         ...state,
+//         currentItem: {
+//           text: "",
+//           key: ""
+//         }
+//       };
+//     default:
+//       return state;
+//   }
+// };
 
 const rootReducer = combineReducers({
   loggedReducer,
-  managerORtenantReducer,
   form: formReducer
 });
 

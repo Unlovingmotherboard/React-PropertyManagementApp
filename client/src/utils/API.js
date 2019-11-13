@@ -12,5 +12,13 @@ export default {
 
   managerSignUp: function(formData) {
     return axios.post("/api/account/manager/signUp", formData);
+  },
+
+  managerSignIn: function(loginData) {
+    return axios.post("/api/account/manager/signIn", loginData);
+  },
+
+  tenantSignIn: function(loginData) {
+    return axios.post("/api/account/signIn", loginData);
   }
 };

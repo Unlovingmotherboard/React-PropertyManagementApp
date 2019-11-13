@@ -131,6 +131,7 @@ const CollectionNameController = {
                 return res.send({
                     success: true,
                     message: "Valid sign in",
+                    type: "Tenant",
                     token: doc._id
                 });
             })

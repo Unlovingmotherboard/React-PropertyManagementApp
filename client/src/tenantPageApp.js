@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import NavBar from "./components/NavBar"
+import LandingPage from "./pages/landingPage/LandingPage"
 
 class TenantPage extends Component {
   render() {
-    return <Router forceRefresh={!'pushState' in window.history}>
+    return <Router>
       <div>
-        <h1>TENANT VIEW! :D</h1>
+      <h1>Yo Tenant!</h1>
       </div>
     </Router>
   }

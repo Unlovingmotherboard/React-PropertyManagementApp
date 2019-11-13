@@ -17,7 +17,7 @@ const ManagerController = {
             .catch(err => console.log(err));
     },
 
-    create: function (req, res, ) {
+    create: function (req, res) {
         const { body } = req;
         const {
             firstName,
@@ -136,7 +136,6 @@ const ManagerController = {
     },
 
     findLogin: function (req, res, next) {
-        console.log(req.body.email)
         const { body } = req;
         const {
             password
@@ -174,9 +173,10 @@ const ManagerController = {
 
             const usersEE = usersE[0];
             if (!usersEE.validPassword(password)) {
+                console.log(usersEE)
                 return res.send({
                     success: false,
-                    message: "Error: invalid 2"
+                    message: "Error: invalid 2?"
                 });
             }
 
@@ -193,6 +193,7 @@ const ManagerController = {
                 return res.send({
                     success: true,
                     message: "Valid sign in",
+                    type: "Manager",
                     token: doc._id
                 });
             })

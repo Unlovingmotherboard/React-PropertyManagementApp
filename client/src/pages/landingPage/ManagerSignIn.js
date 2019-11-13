@@ -1,11 +1,11 @@
 import React from "react";
 import SignInForm from "../../components/LoginForm/SignInForm";
 
-const ManagerSignInPage = () => {
+const ManagerSignInPage = (...props) => {
     return (
         <div>
             <h1>Manager Sign In Page</h1>
-            <SignInForm manager={true} />
+            <SignInForm {...props} />
         </div>
     );
   };

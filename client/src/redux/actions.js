@@ -7,7 +7,8 @@ export const DELETE_ITEM = "DELETE_ITEM";
 export const SET_ADD_FORM = "SET_ADD_FORM";
 export const CLEAR_ADD_FORM = "CLEAR_ADD_FORM";
 
-
+export const FROM_ACTION_LOGIN = "FROM_ACTION_LOGIN";
+export const FROM_NAVBAR_LOGOUT = "FROM_NAVBAR_LOGOUT";
 
 
 
@@ -18,7 +19,13 @@ export const setFirstName = text => {
 }
 
 
+export const fromReducerLogin = (token, manORten) => {
+  return {type: FROM_ACTION_LOGIN, fromLStoken: token, fromLStype: manORten}
+}
 
+export const logout = () => {
+  return {type: FROM_NAVBAR_LOGOUT}
+}
 
 
 
