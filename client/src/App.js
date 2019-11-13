@@ -6,8 +6,11 @@ import NavBar from "./components/NavBar/index"
 
 //Pages
 import LandingPage from "./pages/landingPage/LandingPage";
-import ManagerSignInPage from "./pages/landingPage/ManagerSignIn"
-import LoginInPage from "./pages/landingPage/SignIn"
+import ManagerSignInPage from "./pages/landingPage/ManagerSignIn";
+import LoginInPage from "./pages/landingPage/SignIn";
+import ManagerSignUpPage from "./pages/landingPage/ManagerSignUp";
+import SignUpPage from "./pages/landingPage/SignUp";
+
 
 //
 import ManagerPage from "./managerPageApp";
@@ -55,6 +58,8 @@ class App extends Component {
           <NavBar token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant}></NavBar>
           <Switch>
             <Route exact path="/" component={LandingPage}></Route>
+            <Route exact path="/SignUp" render={(props) => <SignUpPage {...props} manager={false} />}></Route>
+            <Route exact path="/Manager/SignUp" render={(props) => <ManagerSignUpPage {...props} manager={true} />}></Route>
             <Route exact path="/Login" render={(props) => <LoginInPage {...props} manager={false} token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant} />}>></Route> 
             <Route exact path="/Manager/Login" render={(props) => <ManagerSignInPage {...props} manager={true} token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant} />}>></Route> 
             <PrivateRoute exact path="/Manager" token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant} component={ManagerPage} />

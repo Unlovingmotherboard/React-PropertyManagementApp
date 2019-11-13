@@ -9,7 +9,7 @@ import API from "../../utils/API"
 let signUpForm = props => {
   // const { handleSubmit } = props;
 
-  console.log(props);
+  console.log(props[0]);
 
   const tenantSignUpSumbit = () => {
     const toHerpestidae = store.getState().form.signUpFormFromState.values
@@ -37,15 +37,15 @@ let signUpForm = props => {
       <Field name="password" component="input" type="password" />
 
       {
-        props.manager
+        props[0].manager
           ?
           <React.Fragment>
             <label htmlFor="UserName">Username</label>
             <Field name="userName" component="input" type="text" />
-            <Button onClick={managerSignUpSumbit}><Link to="/Manager/SignIn">Sign Up</Link></Button>
+            <Button onClick={managerSignUpSumbit}>Manager Sign Up</Button>
           </React.Fragment>
           :
-          <React.Fragment><Button  onClick={tenantSignUpSumbit}><Link to="/SignIn">Sign Up</Link></Button></React.Fragment>
+          <React.Fragment><Button  onClick={tenantSignUpSumbit}>Tenant Sign Up</Button></React.Fragment>
       }
     </form>
   </div>
