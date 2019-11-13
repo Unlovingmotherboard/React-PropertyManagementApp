@@ -4,6 +4,9 @@ import { Navbar, Dropdown, NavItem, Button } from "react-materialize"
 import "./style.css"
 
 
+//API
+import API from "../../utils/API";
+
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -13,11 +16,22 @@ import store from '../../redux/store';
 function NavBar(props) {
 
 
-    const logout = () => {
-        props.logout();
-        localStorage.removeItem('token')
-        localStorage.removeItem('type');
+    const logoutManager = () => {
+        API.logoutManager(localStorage.getItem("token")).then(() => {
+            props.logout();
+            localStorage.removeItem('token')
+            localStorage.removeItem('type');
+        }).catch(err => console.log(err));
     }
+
+    const logoutTenant = () => {
+        API.logoutTenant(localStorage.getItem("token")).then(() => {
+            props.logout();
+            localStorage.removeItem('token')
+            localStorage.removeItem('type');
+        }).catch(err => console.log(err));
+    }
+
 
     return (
         <div>
@@ -27,13 +41,13 @@ function NavBar(props) {
                    localStorage.getItem('type') === 'Tenant' ?
                    <Dropdown trigger={<a>Tentnat</a>}>
                 {
-                     <Button onClick={logout}>Logout</Button>
+                     <Button onClick={logoutTenant}>Logout</Button>
                 }
                 </Dropdown> : 
                    localStorage.getItem('type') === 'Manager' ? 
                    <Dropdown trigger={<a>Manager</a>}>
                 {
-                    <Button onClick={logout}>Logout</Button>
+                    <Button onClick={logoutManager}>Logout</Button>
                 }
                 </Dropdown>
                 :

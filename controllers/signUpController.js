@@ -136,7 +136,39 @@ const CollectionNameController = {
                 });
             })
         });
-    }
+    },
+
+    logout: function (req, res) {
+        
+        const token = req.query.token;
+
+        dbConnectToUserSessionModel.findOneAndUpdate({
+            _id: token,
+            isDeleted: false
+        }, {
+            $set: {
+                isDeleted: true
+            }
+        }, null, (err, checkSession) => {
+            if (err) {
+                console.log(err)
+                return res.send({
+                    success: false,
+                    message: "Error: Server Error!"
+                });
+            } if(checkSession === null) {
+                return res.send({
+                    success: false,
+                    message: "Error: Could not find session!"
+                });
+            } else {
+                return res.send({
+                    success: true,
+                    message: "Good!"
+                });
+            }
+        });
+    },
 };
 
 /***********|

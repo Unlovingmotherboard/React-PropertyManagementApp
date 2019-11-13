@@ -25,7 +25,8 @@ let signInForm = props => {
             if (res) {
                 localStorage.setItem("token", res.data.token);
                 localStorage.setItem("type", res.data.type);
-                props.fromReducerLogin(localStorage.getItem("token"), localStorage.getItem("type"));
+                localStorage.setItem("username", res.data.username);
+                props.fromReducerLogin(localStorage.getItem("token"), localStorage.getItem("type"), localStorage.getItem("username"));
                 return;
             }
         }).catch(err => console.log(err)).then()
@@ -34,13 +35,14 @@ let signInForm = props => {
     const managerSignInSumbit = (event) => {
         event.preventDefault();
         const toHerpestidae = store.getState().form.signInFormFromState.values
-        console.log(toHerpestidae);
 
         API.managerSignIn(toHerpestidae).then(function (res) {
             if (res) {
+                console.log(res);
                 localStorage.setItem("token", res.data.token);
                 localStorage.setItem("type", res.data.type);
-                props.fromReducerLogin(localStorage.getItem("token"), localStorage.getItem("type"));
+                localStorage.setItem("username", res.data.username);
+                props.fromReducerLogin(localStorage.getItem("token"), localStorage.getItem("type"), localStorage.getItem("username"));
                 return;
             }
         }).catch(err => console.log(err)).then()

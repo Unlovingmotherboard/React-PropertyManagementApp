@@ -19,8 +19,8 @@ export const setFirstName = text => {
 }
 
 
-export const fromReducerLogin = (token, manORten) => {
-  return {type: FROM_ACTION_LOGIN, fromLStoken: token, fromLStype: manORten}
+export const fromReducerLogin = (token, manORten, userName) => {
+  return {type: FROM_ACTION_LOGIN, fromLStoken: token, fromLStype: manORten, fromLSusername: userName}
 }
 
 export const logout = () => {

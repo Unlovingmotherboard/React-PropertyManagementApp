@@ -39,7 +39,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   return (
     <Route {...rest} render={props => (
       ((localStorage.getItem("token") && localStorage.getItem("type") === "Manager") || (rest.token && rest.type === "Manager")) || ((localStorage.getItem("token") && localStorage.getItem("type") === "Tenant") || (rest.token && rest.type === "Tenant"))
-        ? <Component {...props} />
+        ? <Component {...props} {...rest} />
         : <Redirect to={{ pathname: '/', state: { from: props.location } }} />
     )} />
   )
@@ -48,7 +48,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 class App extends Component {
 
   componentDidMount() {
-    this.props.fromReducerLogin(localStorage.getItem("token"), localStorage.getItem("type"));
+    this.props.fromReducerLogin(localStorage.getItem("token"), localStorage.getItem("type"), localStorage.getItem("username"));
   }
 
   render() {
@@ -62,7 +62,7 @@ class App extends Component {
             <Route exact path="/Manager/SignUp" render={(props) => <ManagerSignUpPage {...props} manager={true} />}></Route>
             <Route exact path="/Login" render={(props) => <LoginInPage {...props} manager={false} token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant} />}>></Route> 
             <Route exact path="/Manager/Login" render={(props) => <ManagerSignInPage {...props} manager={true} token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant} />}>></Route> 
-            <PrivateRoute exact path="/Manager" token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant} component={ManagerPage} />
+            <PrivateRoute exact path="/Manager" token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant} username={this.props.ourState.loggedReducer.username} component={ManagerPage} />
             <PrivateRoute exact path="/Tenant" token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant} component={TenantPage} />
           </Switch>
         </div>

@@ -8,6 +8,27 @@ const UserSessionManagerModel = require("../models/UserSessionManager");
 |*  Methods for controller *|
 |***************************/
 
+const VERIFYUSER = (token) => {
+    UserSessionManagerModel.find({
+        _id: token,
+        isDeleted: false
+    }, (err, sessions) => {
+        if (err) {
+            return res.send({
+                success: false,
+                message: "Error: Server Error?"
+            });
+        }
+        if (sessions.length != 1) {
+            return res.send({
+                success: false,
+                message: "Error: invalid session"
+            })
+        }
+    });
+    return;
+}
+
 const ManagerController = {
 
     findAll: function (req, res) {
@@ -193,11 +214,83 @@ const ManagerController = {
                 return res.send({
                     success: true,
                     message: "Valid sign in",
+                    username: userName,
                     type: "Manager",
                     token: doc._id
                 });
             })
         });
+    },
+
+    addProperty: function (req, res) {
+        console.log("Is this working?")
+        const { body } = req;
+
+        const sendToUser = {
+            address: body.address,
+            city: body.city,
+            state: body.state,
+            postalCode: body.postalCode,
+            rent: body.rent,
+            vacant: body.vacant,
+            updates: body.updates,
+            manager: body.manager,
+            tenant: body.tenant,
+        };
+
+        const {token} = body;
+        console.log(token);
+
+        VERIFYUSER(token);
+
+        ManagerUserModel.findOneAndUpdate({
+            userName: sendToUser.manager,
+            isDeleted: false
+        }, {
+            $push: {
+                properties: sendToUser
+            }
+        }, null, (err, checkSession) => {
+            if (err) {
+                console.log(err)
+                return res.send({
+                    success: false,
+                    message: "Error: Server Error!"
+                });
+            } if(checkSession === null) {
+                return res.send({
+                    success: false,
+                    message: "Error: Could not find session!"
+                });
+            } else {
+                return res.send({
+                    success: true,
+                    message: "Added Property!"
+                });
+            }
+        });
+    },
+
+    findAllProperties: function (req, res) {
+        //GET OUR TOKEN
+        console.log(req.query.token);
+        //GET OUR USERNAME
+        console.log(req.query.username);
+        //VERIFY TOKEN
+
+        VERIFYUSER(req.query.token);
+
+        //GET ALL PROPERTY INFO
+
+        ManagerUserModel
+            .findOne({userName: req.query.username}).select('properties')
+            .then((dbModel) => res.json(dbModel))
+            .catch(err => console.log(err));
+
+        // return res.send({
+        //     success: true,
+        //     message: "AYYYYY"
+        // })
     }
 };
 

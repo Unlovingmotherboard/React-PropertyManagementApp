@@ -14,7 +14,8 @@ const loggedReducer = function(state = initialState, action) {
       return {
         ...state,
           token: action.fromLStoken,
-          managerORtenant: action.fromLStype
+          managerORtenant: action.fromLStype,
+          username: action.fromLSusername
       }
 
       case FROM_NAVBAR_LOGOUT:
