@@ -13,7 +13,6 @@ const ManagerHerpestinaeController = require("../../controllers/ManagerControlle
 
 // Matches with "/api/account" this is defined in "../index.js"
 router.route("/")  
-  .get(ManagerHerpestinaeController.findAll)
   .post(ManagerHerpestinaeController.findLogin)
 
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import { Button } from "react-materialize"
 import { Field, reduxForm } from 'redux-form';
@@ -7,18 +7,19 @@ import store from '../../redux/store';
 import API from "../../utils/API"
 
 let signUpForm = props => {
-  // const { handleSubmit } = props;
 
-  console.log(props[0]);
+  console.log(props);
 
-  const tenantSignUpSumbit = () => {
+  const tenantSignUpSumbit = (event) => {
+    event.preventDefault();
     const toHerpestidae = store.getState().form.signUpFormFromState.values
-    API.tenantSignUp(toHerpestidae).then((res) => console.log(res)).catch(err => console.log(err)); 
+    API.tenantSignUp(toHerpestidae).then(() => {props.history.push("/Login")}).catch(err => console.log(err)); 
   }
 
-  const managerSignUpSumbit = () => {
+  const managerSignUpSumbit = (event) => {
+    event.preventDefault();
     const toHerpestidae = store.getState().form.signUpFormFromState.values
-    API.managerSignUp(toHerpestidae).then((res) => console.log(res)).catch(err => console.log(err));
+    API.managerSignUp(toHerpestidae).then(() => {props.history.push("/Manager/Login")}).catch(err => console.log(err));
   }
 
   return (<div className="container">
@@ -53,6 +54,6 @@ let signUpForm = props => {
   )
 }
 
-export default reduxForm({
+export default withRouter(reduxForm({
   form: 'signUpFormFromState' // a unique identifier for this form
-})(signUpForm);
+})(signUpForm));

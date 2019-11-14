@@ -1,6 +1,6 @@
 import React from "react";
-import { Link } from 'react-router-dom';
-import { Navbar, Dropdown, NavItem, Button } from "react-materialize"
+import { withRouter , Link } from 'react-router-dom';
+import { Navbar, Dropdown, Button } from "react-materialize"
 import "./style.css"
 
 
@@ -11,16 +11,15 @@ import API from "../../utils/API";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { logout } from "../../redux/actions";
-import store from '../../redux/store';
 
 function NavBar(props) {
-
-
     const logoutManager = () => {
         API.logoutManager(localStorage.getItem("token")).then(() => {
             props.logout();
             localStorage.removeItem('token')
             localStorage.removeItem('type');
+            localStorage.removeItem('username');
+            props.history.push("/")
         }).catch(err => console.log(err));
     }
 
@@ -29,22 +28,22 @@ function NavBar(props) {
             props.logout();
             localStorage.removeItem('token')
             localStorage.removeItem('type');
+            localStorage.removeItem('username');
         }).catch(err => console.log(err));
     }
-
 
     return (
         <div>
             <Navbar alignLinks="right">
                 <Link to="/">Home Page</Link>
                {
-                   localStorage.getItem('type') === 'Tenant' ?
+                   props.type === "Tenant" ?
                    <Dropdown trigger={<a>Tentnat</a>}>
                 {
                      <Button onClick={logoutTenant}>Logout</Button>
                 }
                 </Dropdown> : 
-                   localStorage.getItem('type') === 'Manager' ? 
+                   props.type === 'Manager' ? 
                    <Dropdown trigger={<a>Manager</a>}>
                 {
                     <Button onClick={logoutManager}>Logout</Button>
@@ -76,7 +75,8 @@ const mapDispatchToProps = dispatch =>
     dispatch
   );
 
-export default NavBar = connect(
+export default NavBar = withRouter(connect(
     null,
     mapDispatchToProps
-  )(NavBar);
+  )(NavBar));
+

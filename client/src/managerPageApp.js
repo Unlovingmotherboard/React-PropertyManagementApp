@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-import NavBar from "./components/NavBar"
-import LandingPage from "./pages/landingPage/LandingPage"
+import { BrowserRouter as Router} from 'react-router-dom';
+
+//COMPONENTS
+import PropertyCard from "./components/ManagerPage/propertieCards";
 
 //API TO Herpestinae
 import API from "./utils/API";
@@ -12,7 +13,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 //ACTIONS
-import { fromReducerLogin } from "./redux/actions";
+import { importProperties } from "./redux/actions";
 
 //REDUX FORM
 import { Field, reduxForm } from 'redux-form';
@@ -33,38 +34,47 @@ const addProperty = (event) => {
   API.addProperty(TEST).then(res => console.log(res)).catch(err => console.log(err));
 }
 
-// const mapDispatchToProps = dispatch =>
-//   bindActionCreators(
-//     {
-//       fromReducerLogin,
-//     },
-//     dispatch
-//   );
+const mapStateToProps = state => {
+  return { ourState: state };
+};
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      importProperties,
+    },
+    dispatch
+  );
 
 
 class ManagerPage extends Component {
-
-  constructor(props){
-    super(props);
-    this.state = {}
-  }
-
  
-  getSnapshotBeforeUpdate() {
-     API.findAllProperties({token: this.props.token,
-      username: this.props.username}).then(res => console.log(res)).catch(err => console.log(err));
-  }
+  // componentDidMount() {
+     
+  // }
 
   render() {
-    console.log(this.props);
-
     return <Router>
       <div>
         <h1>Yo {this.props.username}</h1>
         <h1>You are a {this.props.type}</h1>
 
-        <Modal header="Add Property" trigger={<Button>Button</Button>}>
+        {this.props.properties.map(properties => (
+        <PropertyCard 
+          key={properties.address}
+          address={properties.address}
+          city={properties.city}
+          state={properties.state}
+          postalCode={properties.postalCode}
+          updates={properties.updates}
+          rent={properties.rent}
+          tenant={properties.tenant}
+          vacant={properties.vacant}
+          />))}
+          
+             
 
+        <Modal header="Add Property" trigger={<Button>Button</Button>}>
           <label htmlFor="address">Address</label>
           <Field name="address" component="input" type="text" value="test"/>
           <label htmlFor="city">City</label>
@@ -83,10 +93,10 @@ class ManagerPage extends Component {
   }
 };
 
-// ManagerPage = connect(
-//   null,
-//   mapDispatchToProps
-// )(ManagerPage);
+ManagerPage = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ManagerPage);
 
 export default reduxForm({
   form: 'addProperty' // a unique identifier for this form

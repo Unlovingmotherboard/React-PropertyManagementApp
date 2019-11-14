@@ -9,6 +9,7 @@ export const CLEAR_ADD_FORM = "CLEAR_ADD_FORM";
 
 export const FROM_ACTION_LOGIN = "FROM_ACTION_LOGIN";
 export const FROM_NAVBAR_LOGOUT = "FROM_NAVBAR_LOGOUT";
+export const IMPORT_PROPERTIES = "IMPORT_PROPERTIES";
 
 
 
@@ -21,6 +22,10 @@ export const setFirstName = text => {
 
 export const fromReducerLogin = (token, manORten, userName) => {
   return {type: FROM_ACTION_LOGIN, fromLStoken: token, fromLStype: manORten, fromLSusername: userName}
+}
+
+export const importProperties = (propertiesFromHerpestinae) => {
+  return {type: IMPORT_PROPERTIES, properties: propertiesFromHerpestinae}
 }
 
 export const logout = () => {

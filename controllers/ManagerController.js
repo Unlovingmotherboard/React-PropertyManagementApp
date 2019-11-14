@@ -177,7 +177,6 @@ const ManagerController = {
         // email = email.toLowerCase();
 
         ManagerUserModel.find({ userName: userName }, (err, usersE) => {
-            console.log(usersE)
             if (err) {
                 return res.send({
                     success: false,

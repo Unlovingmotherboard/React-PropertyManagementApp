@@ -17,11 +17,12 @@ import ManagerPage from "./managerPageApp";
 import TenantPage from "./tenantPageApp";
 
 //REDUX 
-import store from "./redux/store";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { fromReducerLogin } from "./redux/actions";
+import { fromReducerLogin, importProperties } from "./redux/actions";
 
+//API TO Herpestinae
+import API from "./utils/API";
 
 const mapStateToProps = state => {
   return { ourState: state };
@@ -31,6 +32,7 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       fromReducerLogin,
+      importProperties
     },
     dispatch
   );
@@ -49,8 +51,16 @@ class App extends Component {
 
   componentDidMount() {
     this.props.fromReducerLogin(localStorage.getItem("token"), localStorage.getItem("type"), localStorage.getItem("username"));
-  }
 
+    if (this.props.ourState.loggedReducer.properties.length <= 0 && localStorage.getItem("token")) {
+      const data = {
+        token: localStorage.getItem("token"),
+        username: localStorage.getItem("username")
+    }
+      API.findAllProperties(data).then((res) => {this.props.importProperties(res.data.properties)}).catch(err => console.log(err));  
+    }
+    
+  }
   render() {
     return (
       <Router>
@@ -58,11 +68,18 @@ class App extends Component {
           <NavBar token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant}></NavBar>
           <Switch>
             <Route exact path="/" component={LandingPage}></Route>
+
             <Route exact path="/SignUp" render={(props) => <SignUpPage {...props} manager={false} />}></Route>
+            
             <Route exact path="/Manager/SignUp" render={(props) => <ManagerSignUpPage {...props} manager={true} />}></Route>
+
             <Route exact path="/Login" render={(props) => <LoginInPage {...props} manager={false} token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant} />}>></Route> 
+
             <Route exact path="/Manager/Login" render={(props) => <ManagerSignInPage {...props} manager={true} token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant} />}>></Route> 
-            <PrivateRoute exact path="/Manager" token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant} username={this.props.ourState.loggedReducer.username} component={ManagerPage} />
+
+            <PrivateRoute exact path="/Manager" properties={this.props.ourState.loggedReducer.properties} token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant} username={this.props.ourState.loggedReducer.username} component={ManagerPage} />
+
+            
             <PrivateRoute exact path="/Tenant" token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant} component={TenantPage} />
           </Switch>
         </div>
