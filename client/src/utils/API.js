@@ -1,36 +1,71 @@
 import axios from "axios";
 
 export default {
-  // Gets all Documents
-  getDocuments: function() {
-    return axios.get("/api/account/signIn");
-  },
+  
 
-  tenantSignUp: function(formData) {
-    return axios.post("/api/account/signUp", formData);
-  },
-
+  //----------MANAGER ROUTES----------//
   managerSignUp: function(formData) {
-    return axios.post("/api/account/manager/signUp", formData);
+    console.log("2 going to sign u up!")
+    return axios.post("/api/manager/signup", formData);
   },
 
   managerSignIn: function(loginData) {
-    return axios.post("/api/account/manager/signIn", loginData);
+    return axios.post("/api/manager/login", loginData);
+  },
+
+  logoutManager: function(logoutManagerToken) {
+    return axios.get(`/api/manager/logout?token=${logoutManagerToken}`);
+  },
+
+  addProperty: function(addPropertyData) {
+    return axios.post("/api/manager", addPropertyData);
+  },
+
+  findAllProperties: function(findAllPropertiesData) {
+    return axios.get(`/api/manager?token=${findAllPropertiesData.token}&username=${findAllPropertiesData.username}`);
+  },
+
+  getApplicationsFromDatabase: function(getApplicationsFromDatabaseData) {
+    return axios.get(`/api/manager/getApplicationsFromDatabase?token=${getApplicationsFromDatabaseData.token}&username=${getApplicationsFromDatabaseData.username}`);
+  },
+
+  assignTenantAndDeleteApplications: function(assignTenantAndDeleteApplicationsData) {
+    return axios.post("/api/manager/assignTenantAndDeleteApplications", assignTenantAndDeleteApplicationsData);
+  },
+//-----//-----MANAGER ROUTES-----//-----//
+
+
+
+
+
+  //----------TENANT ROUTES----------//
+  tenantSignUp: function(formData) {
+    return axios.post("/api/tenant/signUp", formData);
   },
 
   tenantSignIn: function(loginData) {
-    return axios.post("/api/account/signIn", loginData);
+    return axios.post("/api/tenant/signIn", loginData);
   },
 
-  logoutManager: function(token) {
-    return axios.get(`/api/account/manager/logout?token=${token}`);
+  logoutTenant: function(logoutTenantToken) {
+    return axios.get(`/api/tenant/logout?token=${logoutTenantToken}`);
   },
 
-  addProperty: function(data) {
-    return axios.post("/api/Manager", data);
+  sendApplicationToDatabase: function(sendApplicationToDatabaseData) {
+    return axios.post("/api/tenant/sendApplicationToDatabase", sendApplicationToDatabaseData);
   },
 
-  findAllProperties: function(data) {
-    return axios.get(`/api/Manager?token=${data.token}&username=${data.username}`);
-  }
+  //FOR TENANT THAT HAVE NOT APPLIED YET
+  tenantFindAllPropertiesToRent: function(tenantFindAllPropertiesToRentData) {
+    console.log("FOR TENANT THAT HAVE NOT APPLIED YET")
+    return axios.get(`/api/tenant/applynow?token=${tenantFindAllPropertiesToRentData.token}&username=${tenantFindAllPropertiesToRentData.username}`);
+  },
+//--//---//---//--TENANT ROUTES--//---//---//--//
+
+
+  // //FOR TENANT THAT APPLIED AND HAVE A PROPERTY 
+  // tenantFindAllPropertiesRenting: function(data) {
+  //   console.log("FOR TENANT THAT APPLIED AND HAVE A PROPERTY")
+  //   return axios.get(`/api/Tenant/getyourproperty?token=${data.token}&username=${data.username}`);
+  // }
 };

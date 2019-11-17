@@ -1,11 +1,13 @@
 import { combineReducers } from "redux";
 import { reducer as formReducer } from 'redux-form';
-import { FROM_ACTION_LOGIN, FROM_NAVBAR_LOGOUT, IMPORT_PROPERTIES } from './actions';
+import { FROM_ACTION_LOGIN, FROM_NAVBAR_LOGOUT, IMPORT_PROPERTIES, SET_APPLICATIONS_FROM_DB } from './actions';
 
 const initialState = {
     token: null,
     managerORtenant: null,
-    properties: []
+    properties: [],
+    applications: [],
+    renting: null
 };
 
 
@@ -18,14 +20,22 @@ const loggedReducer = function(state = initialState, action) {
         ...state,
           token: action.fromLStoken,
           managerORtenant: action.fromLStype,
-          username: action.fromLSusername
+          username: action.fromLSusername,
+          renting: action.isUserRenting
       }
 
       case FROM_NAVBAR_LOGOUT:
         return {
           ...state,
           token: "",
-          managerORtenant: ""
+          managerORtenant: "",
+          properties: []
+        }
+
+      case SET_APPLICATIONS_FROM_DB:
+        return {
+          ...state,
+          applications: action.applications,
         }
 
         case IMPORT_PROPERTIES:

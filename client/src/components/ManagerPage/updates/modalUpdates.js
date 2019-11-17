@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Modal, Button } from "react-materialize"
+import { } from "react-materialize"
 
 
 // //API
@@ -13,7 +13,7 @@ import { Row, Col, Modal, Button } from "react-materialize"
 function ModalUpdateCard(props) {
     return (
         <div className="container">
-            <h1> {props.uniqueId} {props.whatIsUpdating}</h1>
+            <h1> {props.updateID} {props.whatIsUpdating}</h1>
         </div>
 
     )

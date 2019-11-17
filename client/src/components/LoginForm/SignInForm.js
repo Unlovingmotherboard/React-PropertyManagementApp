@@ -28,19 +28,21 @@ let signInForm = props => {
         const toHerpestidae = store.getState().form.signInFormFromState.values
 
         API.tenantSignIn(toHerpestidae).then(function (res) {
+            
             if (res) {
+                console.log(res);
                 localStorage.setItem("token", res.data.token);
                 localStorage.setItem("type", res.data.type);
                 localStorage.setItem("username", res.data.username);
-                props.fromReducerLogin(localStorage.getItem("token"), localStorage.getItem("type"), localStorage.getItem("username"));
-                return;
+                localStorage.setItem("renting", res.data.renting);
+                props.fromReducerLogin(localStorage.getItem("token"), localStorage.getItem("type"),localStorage.getItem("username"),localStorage.getItem("renting"));
             }
         }).catch(err => console.log(err)).then()
     }
 
     const managerSignInSumbit = (event) => {
         event.preventDefault();
-        const toHerpestidae = store.getState().form.signInFormFromState.values
+        const toHerpestidae = store.getState().form.signInFormFromState.values;
 
         API.managerSignIn(toHerpestidae).then((res) => {
             if (res) {
@@ -58,7 +60,10 @@ let signInForm = props => {
             token: localStorage.getItem("token"),
             username: localStorage.getItem("username")
         }
-         API.findAllProperties(data).then((res) => {props.importProperties(res.data.properties)}).catch(err => console.log(err));    
+         API.findAllProperties(data).then((res) => console.log(res)).catch(err => console.log(err));  
+         
+         
+        //  {props.importProperties(res.data)}
     }
 
 

@@ -3,10 +3,35 @@
 |**********************/
 const dbConnectToUserModel = require("../models/User");
 const dbConnectToUserSessionModel = require("../models/UserSession");
+const dbPropertyModels = require("../models/Properties");
+const dbApplicationModel = require("../models/Applications")
 
 /***************************|
 |*  Methods for controller *|
 |***************************/
+
+const VERIFYUSER = (token) => {
+    dbConnectToUserSessionModel.find({
+        _id: token,
+        isDeleted: false
+    }, (err, sessions) => {
+        if (err) {
+            return res.send({
+                success: false,
+                message: "Error: Server Error?"
+            });
+        }
+        if (sessions.length != 1) {
+            return res.send({
+                success: false,
+                message: "Error: invalid session"
+            })
+        }
+    });
+    return;
+}
+
+
 const CollectionNameController = {
 
     findAll: function (req, res) {
@@ -23,7 +48,8 @@ const CollectionNameController = {
         const {
             firstName,
             lastName,
-            password
+            password,
+            userName
         } = body;
 
         let {
@@ -33,6 +59,10 @@ const CollectionNameController = {
         email = email.toLowerCase();
 
         if (!email) {
+            return res.send('Invalid Credentials').status(404);
+        }
+
+        if (!userName) {
             return res.send('Invalid Credentials').status(404);
         }
 
@@ -60,6 +90,7 @@ const CollectionNameController = {
                 newUSer.firstName = firstName;
                 newUSer.lastName = lastName;
                 newUSer.password = newUSer.generateHash(password);
+                newUSer.userName = userName;
 
                 dbConnectToUserModel.create(newUSer)
                     .then((WelcomeToSkyrim) => res.json(WelcomeToSkyrim))
@@ -93,15 +124,13 @@ const CollectionNameController = {
         console.log("testing");
 
         dbConnectToUserModel.find({ email: email }, (err, usersE) => {
-            
+
             if (err) {
                 return res.send({
                     success: false,
                     message: "Error: server error"
                 });
             }
-
-            console.log(usersE)
 
             if (usersE.length != 1) {
                 return res.send({
@@ -110,7 +139,8 @@ const CollectionNameController = {
                 });
             }
 
-             const usersEE = usersE[0];
+            const usersEE = usersE[0];
+
             if (!usersEE.validPassword(password)) {
                 return res.send({
                     success: false,
@@ -128,18 +158,23 @@ const CollectionNameController = {
                     });
                 }
 
+                console.log(usersE[0]);
+
                 return res.send({
                     success: true,
                     message: "Valid sign in",
                     type: "Tenant",
-                    token: doc._id
+                    token: doc._id,
+                    username: usersE[0].userName,
+                    renting: usersE[0].renting
+
                 });
             })
         });
     },
 
     logout: function (req, res) {
-        
+
         const token = req.query.token;
 
         dbConnectToUserSessionModel.findOneAndUpdate({
@@ -156,7 +191,7 @@ const CollectionNameController = {
                     success: false,
                     message: "Error: Server Error!"
                 });
-            } if(checkSession === null) {
+            } if (checkSession === null) {
                 return res.send({
                     success: false,
                     message: "Error: Could not find session!"
@@ -169,6 +204,129 @@ const CollectionNameController = {
             }
         });
     },
+
+    getPropertiesForTenantToApply: function (req, res) {
+
+        //---------------ROUTE FOR TENANT THAT IS NOT ASSIGNED TO A MANAGER--------------------//
+
+        const { query } = req;
+        const { username, token } = query;
+
+        //VERIFY THE TOKEN IS VALID
+
+        VERIFYUSER(token);
+
+
+
+        //GO INTO DATABASE AND GET TENANT _ID WITH USERNAME
+
+        dbConnectToUserModel.find({ userName: username }, (err, DBres) => {
+            if (err) {
+                return res.send({
+                    success: false,
+                    message: "Error: Server Error?"
+                });
+            }
+
+            if (DBres) {
+                const tenantID = DBres[0]._id;
+                console.log(tenantID)
+
+                //GO INTO DATABASE AND CHECK ALL PROPERTIES FOR TENANT _ID
+
+                dbPropertyModels.find({ tenant: tenantID }, (err, DBpropertyRES) => {
+
+                    if (err) {
+                        return res.send({
+                            success: false,
+                            message: "Error: Server Error?"
+                        });
+                    }
+
+                    if (DBpropertyRES.length > 0) {
+                        return res.send(DBpropertyRES)
+                    }
+
+                    if (DBpropertyRES.length <= 0) {
+                        //IF NO PROPERTIES HAVE TENANT _ID THEN BRING BACK ALL PROPERTIES 
+
+                        dbPropertyModels.find({tenant: null}).then(allproperties => res.json(allproperties)).catch(err => console.log(err))
+                    }
+                })
+            }
+        })
+    },
+
+    getPropertiesRenting: function (req, res) {
+
+
+
+        //-----------------ROUTE FOR TENANT THAT IS ASSIGNED TO MANAGER------------------//
+
+
+
+        //GET ALL PROPERTIES THAT MATCH TENANT _ID
+
+        //-----------------------------------//
+
+    },
+
+    sendApplicationToDatabase: function(req, res) {
+        //GET TOKEN
+        //GET TENANT USERNAME
+        //GET ADDRESS
+        //GET MANAGERID
+        //GET THE FORM INFORMATION 
+
+        const {userName, token, address} = req.body;
+
+        const sendToDB = {
+            pets: req.body.pets,
+            creditScore: req.body.criminalRecord,
+            criminalRecord: req.body.criminalRecord,
+            adults: req.body.adults,
+            kids: req.body.kids,
+            managerID: req.body.managerID
+        }
+
+        VERIFYUSER(token);
+
+        dbConnectToUserModel.find({userName: userName}, (err, resFromUserModel) => {
+            if (err) {
+                return res.send({
+                    success: false,
+                    message: "Error: Server Error?"
+                });
+            }
+
+            if(resFromUserModel) {
+                sendToDB.tenantID = resFromUserModel[0]._id;
+
+                        //GET PROPERTY_ID WITH ADDRESS
+                    dbPropertyModels.find({address: address}, (err, resFomPropertyModel) => {
+                        if (err) {
+                            return res.send({
+                                success: false,
+                                message: "Error: Server Error?"
+                            });
+                        }
+
+                        if(resFomPropertyModel) {
+                            sendToDB.propertyID = resFomPropertyModel[0]._id;
+                            
+                            dbApplicationModel.create(sendToDB).then(resFromApplicationModel => res.json(resFromApplicationModel)).catch(err => console.log(err))
+                        }
+                    });
+            }
+        })
+
+        
+        //SEND TO DATABASE
+        
+    }
+
+
+
 };
 
 /***********|

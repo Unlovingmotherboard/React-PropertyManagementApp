@@ -21,6 +21,7 @@ import { Field, reduxForm } from 'redux-form';
 //REACT MATERALIZE
 import { Modal, Button } from "react-materialize";
 
+
 const addProperty = (event) => {
   event.preventDefault();
   const TEST = store.getState().form.addProperty.values;
@@ -33,6 +34,7 @@ const addProperty = (event) => {
 
   API.addProperty(TEST).then(res => console.log(res)).catch(err => console.log(err));
 }
+
 
 const mapStateToProps = state => {
   return { ourState: state };
@@ -60,6 +62,7 @@ class ManagerPage extends Component {
         <h1>You are a {this.props.type}</h1>
 
         {this.props.properties.map(properties => (
+
         <PropertyCard 
           key={properties.address}
           address={properties.address}
@@ -70,22 +73,24 @@ class ManagerPage extends Component {
           rent={properties.rent}
           tenant={properties.tenant}
           vacant={properties.vacant}
+          propertyID={properties._id}
+          managerORTenant={this.props.type}
+          applications={this.props.applications}
           />))}
           
              
 
         <Modal header="Add Property" trigger={<Button>Button</Button>}>
           <label htmlFor="address">Address</label>
-          <Field name="address" component="input" type="text" value="test"/>
+          <Field name="address" component="input" type="text"/>
           <label htmlFor="city">City</label>
-          <Field name="city" component="input" type="text" value="test" />
+          <Field name="city" component="input" type="text" />
           <label htmlFor="state">State</label>
-          <Field name="state" component="input" type="text" value="test" />
-          <label htmlFor="postalCode">Postal Code</label>
-          <Field name="postalCode" component="input" type="text" value="test" />
-
+          <Field name="state" component="input" type="text" />
+          <label htmlFor="zipcode">zipcode</label>
+          <Field name="zipcode" component="input" type="text" />
           <label htmlFor="rent">Rent</label>
-          <Field name="rent" component="input" type="number" value="2" />
+          <Field name="rent" component="input" type="number" />
           <Button onClick={addProperty}>Add Property</Button>
         </Modal>
       </div>

@@ -11,28 +11,28 @@ import LoginInPage from "./pages/landingPage/SignIn";
 import ManagerSignUpPage from "./pages/landingPage/ManagerSignUp";
 import SignUpPage from "./pages/landingPage/SignUp";
 
-
-//
+//PAGES
 import ManagerPage from "./managerPageApp";
 import TenantPage from "./tenantPageApp";
 
 //REDUX 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { fromReducerLogin, importProperties } from "./redux/actions";
+import { fromReducerLogin, importProperties, setApplications } from "./redux/actions";
 
 //API TO Herpestinae
 import API from "./utils/API";
 
 const mapStateToProps = state => {
-  return { ourState: state };
+  return { storeToProps: state };
 };
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       fromReducerLogin,
-      importProperties
+      importProperties,
+      setApplications
     },
     dispatch
   );
@@ -50,14 +50,36 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 class App extends Component {
 
   componentDidMount() {
-    this.props.fromReducerLogin(localStorage.getItem("token"), localStorage.getItem("type"), localStorage.getItem("username"));
+    this.props.fromReducerLogin(localStorage.getItem("token"), localStorage.getItem("type"), localStorage.getItem("username"), localStorage.getItem("renting"));
 
-    if (this.props.ourState.loggedReducer.properties.length <= 0 && localStorage.getItem("token")) {
+
+    //THIS IS GETTING ALL PROPERTIES FOR THE MANAGER
+    if (this.props.storeToProps.loggedReducer.properties.length <= 0 && localStorage.getItem("token") && localStorage.getItem("type") === "Manager" ) {
+      console.log(`Getting properties for ${localStorage.getItem("username")}`)
       const data = {
         token: localStorage.getItem("token"),
         username: localStorage.getItem("username")
     }
-      API.findAllProperties(data).then((res) => {this.props.importProperties(res.data.properties)}).catch(err => console.log(err));  
+      API.findAllProperties(data).then((res) => {this.props.importProperties(res.data)} ).catch(err => console.log(err));  
+
+
+      //GET ALL APPLICATIONS
+      API.getApplicationsFromDatabase(data).then(res => this.props.setApplications(res.data)).catch(err => console.log(err));
+    }
+    if (this.props.storeToProps.loggedReducer.properties.length <= 0 && localStorage.getItem("token") && localStorage.getItem("type") === "Tenant" ) {
+      console.log("Getting properties for Tenant!")
+
+      const data = {
+        token: localStorage.getItem("token"),
+        username: localStorage.getItem("username"),
+    }
+    //DO THIS ROUTE FIRST tenantFindAllPropertiesRenting TO SEE IF THE TENANT LOGGED IS RENTING
+
+    //IF NOTHING COMES BACK THEN
+
+    //DO THIS ROUTE INSTEAD tenantFindAllPropertiesToRent
+      
+    API.tenantFindAllPropertiesToRent(data).then((res) => this.props.importProperties(res.data)).catch(err => console.log(err)); 
     }
     
   }
@@ -65,7 +87,7 @@ class App extends Component {
     return (
       <Router>
         <div>
-          <NavBar token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant}></NavBar>
+          <NavBar token={this.props.storeToProps.loggedReducer.token} type={this.props.storeToProps.loggedReducer.managerORtenant}></NavBar>
           <Switch>
             <Route exact path="/" component={LandingPage}></Route>
 
@@ -73,14 +95,14 @@ class App extends Component {
             
             <Route exact path="/Manager/SignUp" render={(props) => <ManagerSignUpPage {...props} manager={true} />}></Route>
 
-            <Route exact path="/Login" render={(props) => <LoginInPage {...props} manager={false} token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant} />}>></Route> 
+            <Route exact path="/Login" render={(props) => <LoginInPage {...props} manager={false} token={this.props.storeToProps.loggedReducer.token} type={this.props.storeToProps.loggedReducer.managerORtenant} />}>></Route> 
 
-            <Route exact path="/Manager/Login" render={(props) => <ManagerSignInPage {...props} manager={true} token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant} />}>></Route> 
+            <Route exact path="/Manager/Login" render={(props) => <ManagerSignInPage {...props} manager={true} token={this.props.storeToProps.loggedReducer.token} type={this.props.storeToProps.loggedReducer.managerORtenant} />}>></Route> 
 
-            <PrivateRoute exact path="/Manager" properties={this.props.ourState.loggedReducer.properties} token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant} username={this.props.ourState.loggedReducer.username} component={ManagerPage} />
+            <PrivateRoute exact path="/Manager" properties={this.props.storeToProps.loggedReducer.properties} token={this.props.storeToProps.loggedReducer.token} type={this.props.storeToProps.loggedReducer.managerORtenant} username={this.props.storeToProps.loggedReducer.username} applications={this.props.storeToProps.loggedReducer.applications} component={ManagerPage} />
 
             
-            <PrivateRoute exact path="/Tenant" token={this.props.ourState.loggedReducer.token} type={this.props.ourState.loggedReducer.managerORtenant} component={TenantPage} />
+            <PrivateRoute exact path="/Tenant" properties={this.props.storeToProps.loggedReducer.properties} token={this.props.storeToProps.loggedReducer.token} type={this.props.storeToProps.loggedReducer.managerORtenant} username={this.props.storeToProps.loggedReducer.username} renting={this.props.storeToProps.loggedReducer.renting} component={TenantPage} />
           </Switch>
         </div>
       </Router>

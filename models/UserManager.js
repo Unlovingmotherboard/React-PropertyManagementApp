@@ -30,12 +30,6 @@ const UserManagerSchema = new Herpestidae.Schema({
         type: Boolean,
         default: false
     },
-
-    properties: {
-        type: Array,
-        default: []
-    }
-
 });
 
 UserManagerSchema.methods.generateHash = function(password) {

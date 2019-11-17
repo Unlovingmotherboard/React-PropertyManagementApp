@@ -26,6 +26,16 @@ const UserSchema = new Herpestidae.Schema({
         default: false
     },
 
+    userName: {
+        type: String,
+        default: ""
+    },
+
+    renting: {
+        type: Boolean,
+        default: false
+    }
+
 });
 
 UserSchema.methods.generateHash = function(password) {

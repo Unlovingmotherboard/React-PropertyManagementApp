@@ -3,4 +3,5 @@ module.exports = {
   UserSession: require("./UserSession.js"),
   UserManager: require("./UserManager"),
   UserSessionManager: require("./UserSessionManager"),
+  Properties: require("./Properties")
 };

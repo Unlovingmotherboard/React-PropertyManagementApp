@@ -28,7 +28,7 @@ function NavBar(props) {
             props.logout();
             localStorage.removeItem('token')
             localStorage.removeItem('type');
-            localStorage.removeItem('username');
+            props.history.push("/")
         }).catch(err => console.log(err));
     }
 
@@ -45,8 +45,9 @@ function NavBar(props) {
                 </Dropdown> : 
                    props.type === 'Manager' ? 
                    <Dropdown trigger={<a>Manager</a>}>
-                {
+                {   
                     <Button onClick={logoutManager}>Logout</Button>
+                    
                 }
                 </Dropdown>
                 :

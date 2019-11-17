@@ -11,15 +11,25 @@ const router = require("express").Router();
 // Imports in controller for collectionName
 const ManagerHerpestinaeController = require("../../controllers/ManagerController.js");
 
-// Matches with "/api/account" this is defined in "../index.js"
 
-// Matches with "/api/Manager:id" this is defined in "../index.js"
   router.route("/")
   .get(ManagerHerpestinaeController.findAllProperties)
-  .post(ManagerHerpestinaeController.addProperty)
+  .post(ManagerHerpestinaeController.addPropertyToCollection)
 
-//   router.route("/:id")
-//   .get(ManagerHerpestinaeController.findAllProperties)
+  router.route("/signup")
+  .post(ManagerHerpestinaeController.create)
+
+  router.route("/login")
+  .post(ManagerHerpestinaeController.findLogin)
+
+  router.route("/logout")
+  .get(ManagerHerpestinaeController.logout)
+
+  router.route("/getApplicationsFromDatabase")
+  .get(ManagerHerpestinaeController.getApplicationsFromDatabase)
+
+  router.route("/assignTenantAndDeleteApplications")
+  .post(ManagerHerpestinaeController.assignTenantAndDeleteApplications)
 
 /***********|
 |* EXPORTS *| 

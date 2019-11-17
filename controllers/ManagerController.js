@@ -3,7 +3,9 @@
 |**********************/
 const ManagerUserModel = require("../models/UserManager");
 const UserSessionManagerModel = require("../models/UserSessionManager");
-
+const PropertiesModel = require("../models/Properties");
+const ApplicationModels = require("../models/Applications");
+const tenantModels = require("../models/User")
 /***************************|
 |*  Methods for controller *|
 |***************************/
@@ -39,6 +41,7 @@ const ManagerController = {
     },
 
     create: function (req, res) {
+        console.log("3 Gonna sign u up!")
         const { body } = req;
         const {
             firstName,
@@ -222,8 +225,9 @@ const ManagerController = {
     },
 
     addProperty: function (req, res) {
-        console.log("Is this working?")
         const { body } = req;
+
+
 
         const sendToUser = {
             address: body.address,
@@ -270,7 +274,59 @@ const ManagerController = {
         });
     },
 
+    addPropertyToCollection: function (req, res) {
+        console.log("Is this working?")
+        const { body } = req;
+
+        const sendPropertyToDB = {
+            address: body.address,
+            city: body.city,
+            state: body.state,
+            zipcode: body.zipcode,
+            rent: body.rent,
+            vacant: body.vacant,
+            updates: body.updates,
+            manager: body.manager,
+            managerID: "",
+            tenant: body.tenant,
+            
+        };
+
+        const {token} = body;
+
+        VERIFYUSER(token);
+
+        // console.log(sendPropertyToDB.manager);
+
+        //WITH USERNAME LOOK AT MANAGER WITH THAT USERNAME AND GET THEIR _ID
+
+        ManagerUserModel.find({
+            userName: sendPropertyToDB.manager,
+            isDeleted: false
+        }, (err, sessions) => {
+            if (err) {
+                return res.send({
+                    success: false,
+                    message: "Error: Server Error?"
+                });
+            }
+            if (sessions.length != 1) {
+                return res.send({
+                    success: false,
+                    message: "Error: invalid"
+                })
+            }
+            else {
+                sendPropertyToDB.managerID = sessions[0]._id;
+                PropertiesModel.create(sendPropertyToDB)
+                    .then((WelcomeToVarrock) => res.json(WelcomeToVarrock))
+                    .catch(err => console.log(err));
+            }
+        });
+    },
+
     findAllProperties: function (req, res) {
+
         //GET OUR TOKEN
         console.log(req.query.token);
         //GET OUR USERNAME
@@ -279,17 +335,149 @@ const ManagerController = {
 
         VERIFYUSER(req.query.token);
 
-        //GET ALL PROPERTY INFO
 
-        ManagerUserModel
-            .findOne({userName: req.query.username}).select('properties')
-            .then((dbModel) => res.json(dbModel))
-            .catch(err => console.log(err));
+        
+        ManagerUserModel.find({
+            userName: req.query.username,
+            isDeleted: false
+        }, (err, sessions) => {
 
+            console.log(sessions);
+            if (err) {
+                return res.send({
+                    success: false,
+                    message: "Error: Server Error?"
+                });
+            }
+            if (sessions.length != 1) {
+                return res.send({
+                    success: false,
+                    message: "Error: invalid"
+                })
+            }
+            else {
+                    PropertiesModel
+                    .find({$and :
+                        [
+                        {managerID: sessions[0]._id }, 
+                        ]}
+                        )
+                    .then((dbModel) => res.json(dbModel))
+                    .catch(err => console.log(err));
+
+            }
+        });
+
+        
+
+
+            // (dbModel) => res.json(dbModel)
+
+            // (dbModel) => res.json(dbModel)
         // return res.send({
         //     success: true,
         //     message: "AYYYYY"
         // })
+    },
+
+    getApplicationsFromDatabase: function (req, res) {
+        //GET OUR TOKEN
+        console.log(req.query.token);
+        //GET OUR USERNAME
+        console.log(req.query.username);
+        //VERIFY TOKEN
+
+        VERIFYUSER(req.query.token);
+
+        ManagerUserModel.find({
+            userName: req.query.username,
+            isDeleted: false
+        }, (err, sessions) => {
+            if (err) {
+                return res.send({
+                    success: false,
+                    message: "Error: Server Error?"
+                });
+            }
+            if (sessions.length != 1) {
+                return res.send({
+                    success: false,
+                    message: "Error: invalid"
+                })
+            }
+            else {
+
+                const managerid = sessions[0]._id;
+                ApplicationModels
+                    .find({managerID: managerid})
+                    .then((dbModel) => res.json(dbModel))
+                    .catch(err => console.log(err));
+
+            }
+        });
+
+        
+
+
+            // (dbModel) => res.json(dbModel)
+
+            // (dbModel) => res.json(dbModel)
+        // return res.send({
+        //     success: true,
+        //     message: "AYYYYY"
+        // })
+    },
+
+    assignTenantAndDeleteApplications: function (req, res) {
+        console.log(req.body);
+
+        //GO INTO TENANT AND ADD THE APPLICATION INFORMATION
+        const applicationInformation = {};
+
+        applicationInformation.adults = req.body.adults;
+        applicationInformation.creditScore = req.body.creditScore;
+        applicationInformation.criminalRecord = req.body.criminalRecord;
+        applicationInformation.kids = req.body.kids;
+        applicationInformation.pets = req.body.pets;
+
+        //GO TO PROPERTY AND ASSIGN TENANT ID
+
+        const tenantIDs = req.body.tenantID;
+        const propertyIDs = req.body.propertyID;
+        console.log(propertyIDs + tenantIDs)
+        
+
+        PropertiesModel.findOneAndUpdate({
+            _id: propertyIDs,
+        }, {
+                tenant: tenantIDs,
+                vacant: false
+        }, null, (err, res1) => {
+            if (err) {
+                console.log(err)
+                return res.send({
+                    success: false,
+                    message: "Error: Server Error!"
+                });
+            } 
+            if(res1) {
+                tenantModels.findOneAndUpdate({
+                    _id: tenantIDs,
+                }, {
+                    renting: true
+                }, null, (err, res2) => {
+                    if(err) {
+                        return res.send({
+                            success: false,
+                            message: "Error: Server Error!"
+                        });
+                    }
+                    if(res2) {
+                        ApplicationModels.deleteMany({propertyID: propertyIDs}).then(res => res.json(res)).catch(err => res.json(err));
+                    }
+                });
+            } 
+        });
     }
 };
 
@@ -297,3 +485,7 @@ const ManagerController = {
 |* EXPORTS *|
 |***********/
 module.exports = ManagerController;
+
+
+
+// 
