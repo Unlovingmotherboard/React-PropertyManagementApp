@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Chip } from "react-materialize"
+import { Row, Col, Card, Button, Chip } from "react-materialize"
 import { withRouter } from 'react-router-dom';
 
 
@@ -21,6 +21,9 @@ function acceptFYI(props) {
     sendDataForUpdates.type = props.type;
     sendDataForUpdates.acceptDenySeen = "Aknowledged";
 
+    console.log(sendDataForUpdates)
+
+
     API.changeStatusOfUpdates(sendDataForUpdates).then(res => console.log(res)).catch(err => console.log(err))
 }
 
@@ -33,6 +36,9 @@ function denyRequest(props) {
     sendDataForUpdates.message = props.message;
     sendDataForUpdates.type = props.type;
     sendDataForUpdates.acceptDenySeen = "Deny";
+
+    console.log(sendDataForUpdates)
+
 
     API.changeStatusOfUpdates(sendDataForUpdates).then(res => console.log(res)).catch(err => console.log(err))
 
@@ -48,16 +54,42 @@ function acceptRequest(props) {
     sendDataForUpdates.type = props.type;
     sendDataForUpdates.acceptDenySeen = "Accept";
 
+    console.log(sendDataForUpdates)
+
     API.changeStatusOfUpdates(sendDataForUpdates).then(res => console.log(res)).catch(err => console.log(err))
 
 }
 
 
-function ModalUpdateCard(props) {
-    console.log(props)
+function ManagerUpdatesCard(props) {
     return (
-        <div className="container">
-            <h5>{props.type}</h5>
+        <div className="container-fluid">
+            <Row>
+                <Col m={6} s={12} l={12} xl={12}>
+                    <Card>
+                        <h5>{props.type}</h5>
+                        <p>{props.message}</p>
+                        {
+                            props.type === "FYI" 
+                            ?
+                            <Button waves="light" modal="close" onClick={() => acceptFYI(props)}>Got It!</Button>
+                            :
+                            <React.Fragment><Button waves="red" modal="close" onClick={() => denyRequest(props)}>Denny</Button>
+                            <Button waves="light" modal="close" onClick={() => acceptRequest(props)}>Accept</Button></React.Fragment>
+                        }
+                    </Card>
+                </Col>
+            </Row>
+        </div>
+    )
+}
+
+
+
+export default withRouter(ManagerUpdatesCard);
+
+
+{/* <h5>{props.type}</h5>
             <p>{props.message}</p>
 
             {
@@ -92,13 +124,4 @@ function ModalUpdateCard(props) {
                     :
                 null
                     
-            }
-
-        </div>
-
-    )
-}
-
-
-
-export default withRouter(ModalUpdateCard);
+            } */}

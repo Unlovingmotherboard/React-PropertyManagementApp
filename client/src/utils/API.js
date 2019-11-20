@@ -29,6 +29,14 @@ export default {
     return axios.get(`/api/manager/getApplicationsFromDatabase?token=${getApplicationsFromDatabaseData.token}&username=${getApplicationsFromDatabaseData.username}`);
   },
 
+  getUpdatesFromDatabase: function(getUpdatesFromDatabaseData) {
+    return axios.get(`/api/manager/getUpdatesFromDatabase?token=${getUpdatesFromDatabaseData.token}&username=${getUpdatesFromDatabaseData.username}`);
+  },
+
+  changeStatusOfUpdates: function(changeStatusOfUpdatesData) {
+    return axios.post("/api/manager/changeStatusOfUpdates", changeStatusOfUpdatesData);
+  },
+
   assignTenantAndDeleteApplications: function(assignTenantAndDeleteApplicationsData) {
     return axios.post("/api/manager/assignTenantAndDeleteApplications", assignTenantAndDeleteApplicationsData);
   },
@@ -60,6 +68,18 @@ export default {
     console.log("FOR TENANT THAT HAVE NOT APPLIED YET")
     return axios.get(`/api/tenant/applynow?token=${tenantFindAllPropertiesToRentData.token}&username=${tenantFindAllPropertiesToRentData.username}`);
   },
+
+  sendUpdatesToProperty: function(updateInfo) {
+    return axios.post("/api/tenant/sendUpdatesToProperty", updateInfo);
+  },
+
+  findAllUpdates: function(dataForFindingUpdates) {
+    return axios.get(`/api/tenant/findAllUpdates?token=${dataForFindingUpdates.token}&username=${dataForFindingUpdates.username}`)
+  },
+
+  setUpdatesToSeen: function(setUpdatesToSeenData) {
+    return axios.post('/api/tenant/setUpdatesToSeen', setUpdatesToSeenData)
+  }
 //--//---//---//--TENANT ROUTES--//---//---//--//
 
 

@@ -1,5 +1,7 @@
 import React from "react";
 import { Button } from "react-materialize";
+import { withRouter } from 'react-router-dom';
+
 
 import { Field, reduxForm } from 'redux-form';
 import store from '../../redux/store';
@@ -8,13 +10,15 @@ import API from "../../utils/API";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import { fromReducerLogin, importProperties } from "../../redux/actions";
+import { fromReducerLogin, importProperties, setUpdates, getUpdates } from "../../redux/actions";
 
 const mapDispatchToProps = dispatch =>
     bindActionCreators(
         {
             fromReducerLogin,
-            importProperties
+            importProperties,
+            setUpdates,
+            getUpdates
         },
         dispatch
     );
@@ -36,9 +40,30 @@ let signInForm = props => {
                 localStorage.setItem("username", res.data.username);
                 localStorage.setItem("renting", res.data.renting);
                 props.fromReducerLogin(localStorage.getItem("token"), localStorage.getItem("type"),localStorage.getItem("username"),localStorage.getItem("renting"));
+                setPropertiesForTenants();
             }
         }).catch(err => console.log(err)).then()
     }
+
+    const setPropertiesForTenants = () => {
+
+        const data = {
+            token: localStorage.getItem("token"),
+            username: localStorage.getItem("username"),
+        }
+
+        API.findAllUpdates(data).then(res => this.props.getUpdates(res.data)).catch(err => console.log(err));
+
+        API.tenantFindAllPropertiesToRent(data).then((res) => {
+            props.importProperties(res.data)
+            props.history.push("/Tenant");
+        }).catch(err => console.log(err)); 
+
+        
+    }
+
+
+
 
     const managerSignInSumbit = (event) => {
         event.preventDefault();
@@ -52,28 +77,37 @@ let signInForm = props => {
                 props.fromReducerLogin(localStorage.getItem("token"), localStorage.getItem("type"), localStorage.getItem("username"));
                 setProperties();
             }
+            
         }).catch(err => console.log(err));
     }
+
 
     const setProperties = () => {
         const data = {
             token: localStorage.getItem("token"),
             username: localStorage.getItem("username")
         }
-         API.findAllProperties(data).then((res) => console.log(res)).catch(err => console.log(err));  
+        API.findAllProperties(data).then((res) => {
+            props.importProperties(res.data)
+        } ).catch(err => console.log(err));  
+
+        API.getUpdatesFromDatabase(data).then((res) => {
+            props.setUpdates(res.data)
+            props.history.push("/Manager");
+        } ).catch(err => console.log(err));  
+
          
-         
-        //  {props.importProperties(res.data)}
+                //  {props.importProperties(res.data)}
     }
 
 
-    if (props[0].type === "Manager") {
-        props[0].history.push("/Manager");
-    }
+    // if (props[0].type === "Manager") {
+    //     props[0].history.push("/Manager");
+    // }
 
-    if (props[0].type === "Tenant") {
-        props[0].history.push("/Tenant");
-    }
+    // if (props[0].type === "Tenant") {
+    //     props[0].history.push("/Tenant");
+    // }
     return (
 
         <div className="container">
@@ -108,6 +142,6 @@ signInForm = connect(
     mapDispatchToProps
 )(signInForm);
 
-export default reduxForm({
+export default withRouter(reduxForm({
     form: 'signInFormFromState' // a unique identifier for this form
-})(signInForm);
+})(signInForm));

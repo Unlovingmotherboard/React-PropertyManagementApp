@@ -31,6 +31,13 @@ const ManagerHerpestinaeController = require("../../controllers/ManagerControlle
   router.route("/assignTenantAndDeleteApplications")
   .post(ManagerHerpestinaeController.assignTenantAndDeleteApplications)
 
+  router.route("/getUpdatesFromDatabase")
+  .get(ManagerHerpestinaeController.getUpdatesFromDatabase)
+
+  router.route("/changeStatusOfUpdates")
+  .post(ManagerHerpestinaeController.changeStatusOfUpdates)
+  
+
 /***********|
 |* EXPORTS *| 
 |***********/

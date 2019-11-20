@@ -6,6 +6,8 @@ const UserSessionManagerModel = require("../models/UserSessionManager");
 const PropertiesModel = require("../models/Properties");
 const ApplicationModels = require("../models/Applications");
 const tenantModels = require("../models/User")
+const dbUpdatesModel = require("../models/Updates");
+
 /***************************|
 |*  Methods for controller *|
 |***************************/
@@ -381,11 +383,6 @@ const ManagerController = {
     },
 
     getApplicationsFromDatabase: function (req, res) {
-        //GET OUR TOKEN
-        console.log(req.query.token);
-        //GET OUR USERNAME
-        console.log(req.query.username);
-        //VERIFY TOKEN
 
         VERIFYUSER(req.query.token);
 
@@ -412,20 +409,42 @@ const ManagerController = {
                     .find({managerID: managerid})
                     .then((dbModel) => res.json(dbModel))
                     .catch(err => console.log(err));
-
             }
-        });
+        }); 
+    },
 
-        
+    getUpdatesFromDatabase: function (req, res) {
+        console.log("GETTING UPDATES")
 
+        VERIFYUSER(req.query.token);
 
-            // (dbModel) => res.json(dbModel)
+        ManagerUserModel.find({
+            userName: req.query.username,
+            isDeleted: false
+        }, (err, getManagerId) => {
+            if (err) {
+                return res.send({
+                    success: false,
+                    message: "Error: Server Error?"
+                });
+            }
+            if (getManagerId.length != 1) {
+                return res.send({
+                    success: false,
+                    message: "Error: invalid"
+                })
+            }
+            else {
 
-            // (dbModel) => res.json(dbModel)
-        // return res.send({
-        //     success: true,
-        //     message: "AYYYYY"
-        // })
+                const managerIdFromDB = getManagerId[0]._id;
+                console.log(managerIdFromDB);
+                dbUpdatesModel
+                    .find({managerID: managerIdFromDB})
+                    .then((dbModel) => res.json(dbModel))
+                    .catch(err => console.log(err));
+            }
+        }); 
+
     },
 
     assignTenantAndDeleteApplications: function (req, res) {
@@ -473,11 +492,44 @@ const ManagerController = {
                         });
                     }
                     if(res2) {
-                        ApplicationModels.deleteMany({propertyID: propertyIDs}).then(res => res.json(res)).catch(err => res.json(err));
+                        ApplicationModels.deleteMany({tenantID: tenantIDs}).then(res => res.json(res)).catch(err => res.json(err));
                     }
                 });
             } 
         });
+    },
+
+    changeStatusOfUpdates: function (req, res) {
+
+        const {message, propertyID, type, acceptDenySeen} = req.body;
+
+        if(acceptDenySeen === "Accept" || acceptDenySeen === "Deny" || acceptDenySeen === "Aknowledged") {
+
+
+            dbUpdatesModel.findOneAndUpdate({propertyID: propertyID, message: message, type: type}, {
+
+                status: acceptDenySeen
+
+            }, null, (err, reschangeStatusOfUpdates) => {
+                if (err) {
+                    return res.send({
+                        success: false,
+                        message: "Error: Server Error!"
+                    });
+                } 
+
+                if(reschangeStatusOfUpdates) {
+                    return res.send({
+                        success: true,
+                        message: "Update was accepted!"
+                    });
+                }
+            });
+        } else {
+            return res.send("Not a proper response");
+        }
+
+            
     }
 };
 

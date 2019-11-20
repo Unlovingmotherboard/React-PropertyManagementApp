@@ -29,6 +29,15 @@ const TenantHerpestinaeController = require("../../controllers/signUpController"
   router.route("/sendApplicationToDatabase")
   .post(TenantHerpestinaeController.sendApplicationToDatabase)
 
+  router.route("/sendUpdatesToProperty")
+  .post(TenantHerpestinaeController.sendUpdatesToProperty)
+
+  router.route("/findAllUpdates")
+  .get(TenantHerpestinaeController.getUpdates)
+
+  router.route("/setUpdatesToSeen")
+  .post(TenantHerpestinaeController.setUpdatesToSeen)
+
 
 //   router.route("/:id")
 //   .get(ManagerHerpestinaeController.findAllProperties)

@@ -4,7 +4,8 @@
 const dbConnectToUserModel = require("../models/User");
 const dbConnectToUserSessionModel = require("../models/UserSession");
 const dbPropertyModels = require("../models/Properties");
-const dbApplicationModel = require("../models/Applications")
+const dbApplicationModel = require("../models/Applications");
+const dbUpdatesModel = require("../models/Updates");
 
 /***************************|
 |*  Methods for controller *|
@@ -323,9 +324,58 @@ const CollectionNameController = {
         
         //SEND TO DATABASE
         
+    },
+
+    sendUpdatesToProperty: function(req, res) {
+        console.log(req.body);
+
+        const sendUpdatesToDB = {}
+
+        sendUpdatesToDB.type = req.body.type;
+        sendUpdatesToDB.message = req.body.message;
+        sendUpdatesToDB.managerID = req.body.managerID;
+        sendUpdatesToDB.tenantID = req.body.tenantID;
+        sendUpdatesToDB.propertyID = req.body.propertyID;
+
+        console.log(sendUpdatesToDB)
+
+        dbUpdatesModel.create(sendUpdatesToDB).then(resFromUpdatesModel => res.json(resFromUpdatesModel)).catch(err => console.log(err))
+
+    },
+
+    getUpdates: function(req, res) {
+        
+        const {token, username} = req.query;
+
+        VERIFYUSER(token);
+
+        //FIND TENANT ID WITH USERNAME
+
+        dbConnectToUserModel.find({userName: username}, (err, findTenantID) => {
+            if (err) {
+                return res.send({
+                    success: false,
+                    message: "Error: Server Error?"
+                });
+            }
+
+            if (findTenantID) {
+                const tenantID = findTenantID[0]._id;
+
+
+                dbUpdatesModel.find({tenantID: tenantID}).then(sendAllUpdates => res.json(sendAllUpdates)).catch(err => console.log(err))
+
+            }
+        })
+    },
+
+    setUpdatesToSeen: function(req, res) {
+
+        dbUpdatesModel.update(
+            { _id: { $in: req.body } },
+            { $set: { seen : true } },
+            {multi: true}).then(SEENALLUPDATES => res.json(SEENALLUPDATES)).catch(err => console.log(err))
     }
-
-
 
 };
 

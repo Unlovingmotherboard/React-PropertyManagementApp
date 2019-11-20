@@ -4,6 +4,8 @@ import { BrowserRouter as Router} from 'react-router-dom';
 //COMPONENTS
 import PropertyCard from "./components/ManagerPage/propertieCards";
 
+import ManagerPropertyCard from "./components/ManagerComponents/PropertyCard/ManagerPropertyCard"
+
 //API TO Herpestinae
 import API from "./utils/API";
 
@@ -63,20 +65,22 @@ class ManagerPage extends Component {
 
         {this.props.properties.map(properties => (
 
-        <PropertyCard 
+        <ManagerPropertyCard 
           key={properties.address}
           address={properties.address}
           city={properties.city}
           state={properties.state}
           postalCode={properties.postalCode}
-          updates={properties.updates}
+          updates={this.props.updates}
           rent={properties.rent}
           tenant={properties.tenant}
           vacant={properties.vacant}
           propertyID={properties._id}
           managerORTenant={this.props.type}
           applications={this.props.applications}
-          />))}
+          propertyID={properties._id}
+          />))
+          }
           
              
 
@@ -97,6 +101,8 @@ class ManagerPage extends Component {
     </Router>
   }
 };
+
+
 
 ManagerPage = connect(
   mapStateToProps,

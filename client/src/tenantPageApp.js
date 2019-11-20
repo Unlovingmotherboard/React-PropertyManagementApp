@@ -3,6 +3,7 @@ import { BrowserRouter as Router} from 'react-router-dom';
 
 //COMPONENTS
 import PropertyCard from "./components/ManagerPage/propertieCards";
+import TenantPropertyCard from "./components/TenantComponents/PropertyCard/TenantPropertyCard"
 
 //API TO Herpestinae
 import API from "./utils/API";
@@ -54,6 +55,7 @@ class TenantPage extends Component {
   // }
 
   render() {
+    console.log(this.props)
     return <Router>
       <div>
         <h1>Yo {this.props.username}</h1>
@@ -62,25 +64,26 @@ class TenantPage extends Component {
         {this.props.renting === "true" ?
 
         this.props.properties.map(properties => (
-          <PropertyCard 
+          <TenantPropertyCard 
             key={properties._id}
             address={properties.address}
             city={properties.city}
             state={properties.state}
             postalCode={properties.postalCode}
-            updates={properties.updates}
+            updates={this.props.tenantUpdates}
             rent={properties.rent}
             renting={this.props.renting}
             tenant={properties.tenant}
             vacant={properties.vacant}
             managerORTenant={this.props.type}
             managerID={properties.managerID}
+            propertyID={properties._id}
             />))
       
         :
 
         this.props.properties.map(properties => (
-          <PropertyCard 
+          <TenantPropertyCard 
             key={properties.address}
             address={properties.address}
             city={properties.city}
