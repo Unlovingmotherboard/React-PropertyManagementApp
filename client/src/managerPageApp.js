@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router} from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
+
+import { Row } from "react-materialize";
 
 //COMPONENTS
-import PropertyCard from "./components/ManagerPage/propertieCards";
 
 import ManagerPropertyCard from "./components/ManagerComponents/PropertyCard/ManagerPropertyCard"
 
@@ -52,51 +53,57 @@ const mapDispatchToProps = dispatch =>
 
 
 class ManagerPage extends Component {
- 
+
   // componentDidMount() {
-     
+
   // }
 
   render() {
     return <Router>
       <div>
-        <h1>Yo {this.props.username}</h1>
-        <h1>You are a {this.props.type}</h1>
+        <Row>
+          <div className="container center-align">
+            <h1>Welcome {this.props.username}</h1>
+          </div>
 
-        {this.props.properties.map(properties => (
+          <div className="container center-align">
+            <Modal header="Add Property" trigger={<Button>Add Property</Button>}>
+              <label htmlFor="address">Address</label>
+              <Field name="address" component="input" type="text" />
+              <label htmlFor="city">City</label>
+              <Field name="city" component="input" type="text" />
+              <label htmlFor="state">State</label>
+              <Field name="state" component="input" type="text" />
+              <label htmlFor="zipcode">zipcode</label>
+              <Field name="zipcode" component="input" type="text" />
+              <label htmlFor="rent">Rent</label>
+              <Field name="rent" component="input" type="number" />
+              <Button onClick={addProperty}>Add Property</Button>
+            </Modal>
+          </div>
 
-        <ManagerPropertyCard 
-          key={properties.address}
-          address={properties.address}
-          city={properties.city}
-          state={properties.state}
-          postalCode={properties.postalCode}
-          updates={this.props.updates}
-          rent={properties.rent}
-          tenant={properties.tenant}
-          vacant={properties.vacant}
-          propertyID={properties._id}
-          managerORTenant={this.props.type}
-          applications={this.props.applications}
-          propertyID={properties._id}
-          />))
+        </Row>
+
+        <Row>
+          {this.props.properties.map(properties => (
+
+            <ManagerPropertyCard
+              key={properties.address}
+              address={properties.address}
+              city={properties.city}
+              state={properties.state}
+              postalCode={properties.postalCode}
+              updates={this.props.updates}
+              rent={properties.rent}
+              tenant={properties.tenant}
+              vacant={properties.vacant}
+              propertyID={properties._id}
+              managerORTenant={this.props.type}
+              applications={this.props.applications}
+              propertyID={properties._id}
+            />))
           }
-          
-             
-
-        <Modal header="Add Property" trigger={<Button>Button</Button>}>
-          <label htmlFor="address">Address</label>
-          <Field name="address" component="input" type="text"/>
-          <label htmlFor="city">City</label>
-          <Field name="city" component="input" type="text" />
-          <label htmlFor="state">State</label>
-          <Field name="state" component="input" type="text" />
-          <label htmlFor="zipcode">zipcode</label>
-          <Field name="zipcode" component="input" type="text" />
-          <label htmlFor="rent">Rent</label>
-          <Field name="rent" component="input" type="number" />
-          <Button onClick={addProperty}>Add Property</Button>
-        </Modal>
+        </Row>
       </div>
     </Router>
   }

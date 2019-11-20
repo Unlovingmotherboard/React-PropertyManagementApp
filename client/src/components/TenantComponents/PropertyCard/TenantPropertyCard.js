@@ -39,60 +39,23 @@ const sendUpdateToManager = (props) => {
     updatesToHerpestidae.managerID = props.managerID;
     updatesToHerpestidae.propertyID = props.propertyID;
 
-    console.log(updatesToHerpestidae);
-
     API.sendUpdatesToProperty(updatesToHerpestidae).then(res => console.log(res)).catch(err => console.log(err));
 }
 
-function searchGetAllNonPendingUpdates(nameKey, myArray) {
-    let newArray = []
-
-    for (var i = 0; i < myArray.length; i++) {
-
-        if (myArray[i].propertyID === nameKey && myArray[i].status !== "Pending") {
-            newArray.push(myArray[i])
-        }
-    }
-    console.log(newArray);
-    return newArray.length;
-}
-
-function getAllNonPendingUpdates(updatesArray) {
-    let newArray = []
-
-    for (var i = 0; i < updatesArray.length; i++) {
-
-        if (updatesArray[i].status !== "Pending" && updatesArray[i].seen === false) {
-            newArray.push(updatesArray[i])
-        }
-    }
-    return newArray;
-}
-
+//GET AN ARRAY OF ALL NON-PENDING UPDATES FROM 'getAllNonPendingUpdates' THEN MAKES AN API TO MAKE THEM AS SEEN
 function seenUpdates(updates) {
 
     const updateToSeen = getAllNonPendingUpdates(updates);
-    console.log(updateToSeen)
     if (updateToSeen >= 0) {
         return console.log("Nothing to update");
     }
+
 
     API.setUpdatesToSeen(updateToSeen).then(res => console.log(res)).catch(err => console.log(err))
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+//RETURNS AN ARRAY OF ALL NON-PENDING UPDATES 
 function getAllNonPendingUpdates(updatesArray) {
     let newArray = []
 
@@ -102,8 +65,26 @@ function getAllNonPendingUpdates(updatesArray) {
             newArray.push(updatesArray[i])
         }
     }
+    
     return newArray;
 }
+//CHECKS FOR NON-PENDING UPDATES THAT HAVE NOT BEEN MARKED AS SEEN
+function checkIfNonPendingUpdatesHaveBeenMarkedSeen(updatesArray) {
+    let newArray = []
+
+    for (var i = 0; i < updatesArray.length; i++) {
+
+        console.log(updatesArray[i].status)
+        console.log(updatesArray[i].seen)
+
+        if (updatesArray[i].status !== "Pending" && updatesArray[i].seen === false) {
+            newArray.push(updatesArray[i])
+        }
+    }
+    return newArray.length;
+}
+
+
 
 function TenantPropertyCard(props) {
     return (
@@ -158,14 +139,15 @@ function TenantPropertyCard(props) {
                                             type={renderAllUpdates.type}
                                             message={renderAllUpdates.message}
                                             status={renderAllUpdates.status}
-                                            {...props}
+                                            seenUpdate={renderAllUpdates.seen}
+                                           
                                             />
                                         ))
                                         :
                                         null
                                     }
                                 </Modal>
-                                <Badge className="red" newIcon>{searchGetAllNonPendingUpdates(props.propertyID, props.updates)}</Badge>
+                                <Badge className="red" newIcon>{checkIfNonPendingUpdatesHaveBeenMarkedSeen(props.updates)}</Badge>
                             </React.Fragment>
                                 :
                                 null
@@ -181,158 +163,3 @@ function TenantPropertyCard(props) {
 export default withRouter(reduxForm({
     form: 'tenantApplicationForm' // a unique identifier for this form
 })(TenantPropertyCard));
-
-
-
-
-
-
-
-
-
-
-
-
-// { //-------------------SHOW APPLICATIONS AND BADGE IF APPLICATIONS EXIST FOR PROPERTY----------TENANT---------//
-//     props.renting === "true" && props.managerORTenant === "Tenant"
-//         ?
-//         <React.Fragment>
-
-//             <Modal header={props.address} trigger={<Button>Add Updates</Button>}>
-//                 <label htmlFor="type">Type</label>
-//                 <Field name="type" component="input" type="text" placeholder="Repair? Request? FYI?" />
-
-//                 <label htmlFor="message">Message</label>
-//                 <Field name="message" component="input" type="text" />
-//                 <Button onClick={() => sendUpdateToManager(props)}>Send Update!</Button>
-//             </Modal>
-
-//             {
-
-//                 searchLength(props.propertyID, props.updates) === 0
-//                     ?
-//                     null
-//                     :
-//                     searchLength(props.propertyID, props.updates) > 0
-//                         ?
-
-//                         <React.Fragment>
-
-//                             <Modal header={props.address} trigger={<Button>Check Updates</Button>}>
-//                             <Button onClick={() => seenUpdates(props.updates)}>Mark As Seen</Button>
-
-//                             {props.updates.map(updatesToModal => (
-//                             <ModalUpdateCard
-//                                 key={updatesToModal.message}
-//                                 type={updatesToModal.type}
-//                                 message={updatesToModal.message}
-//                                 status={updatesToModal.status}
-//                                 {...props}
-//                             />
-//                         ))}
-
-//                             </Modal>
-
-//                             {
-//                                 searchGetAllNonPendingUpdates(props.propertyID, props.updates) > 0 ?
-
-//                                 <Badge className="red" newIcon>{searchGetAllNonPendingUpdates(props.propertyID, props.updates)}</Badge>
-
-//                                 :
-
-//                                 <Badge className="red" newIcon>0</Badge>
-
-//                             }
-
-
-
-//                         </React.Fragment>
-
-//                         :
-//                         null
-
-//             }
-
-
-
-//         </React.Fragment>
-
-//         :
-//         props.renting === "false" && props.managerORTenant === "Tenant"
-//             ?
-//             <Modal header="Apply Now!" trigger={<Button>Apply</Button>}>
-//                 <label htmlFor="pets">Pets</label>
-//                 <Field name="pets" component="input" type="text" />
-
-//                 <label htmlFor="criminalRecord">Criminal Record</label>
-//                 <Field name="criminalRecord" component="input" type="text" />
-
-//                 <label htmlFor="creditScore">Credit Score</label>
-//                 <Field name="creditScore" component="input" type="text" />
-
-//                 <label htmlFor="adults">Adults</label>
-//                 <Field name="adults" component="input" type="text" />
-
-//                 <label htmlFor="kids">Children</label>
-//                 <Field name="kids" component="input" type="text" />
-//                 <Button onClick={() => sendApplication(props)}>Send Application</Button>
-//             </Modal>
-//             :
-//             props.managerORTenant === "Manager" && props.updates.length > 0
-//                 ?
-
-//                 <React.Fragment>
-//                     <Badge className="red" >{props.updates.length} New Updates!</Badge>
-//                     <Modal header={props.address} trigger={<Button>Updates</Button>}>
-//                         {props.updates.map(updatesToModal => (
-//                             <ModalUpdateCard
-//                                 key={updatesToModal.message}
-//                                 type={updatesToModal.type}
-//                                 message={updatesToModal.message}
-//                                 {...props}
-//                             />
-//                         ))}
-//                     </Modal>
-//                 </React.Fragment>
-//                 :
-//                 null
-// }
-
-
-// { //-------------------SHOW APPLICATIONS AND BADGE IF APPLICATIONS EXIST FOR PROPERTY---------MANAGER----------//
-//     props.managerORTenant === "Tenant"
-//         ?
-//         null
-//         :
-//         (props.managerORTenant === "Manager" && searchLength(props.propertyID, props.applications) === 0)
-//             ?
-//             null
-//             :
-//             (props.managerORTenant === "Manager" && searchLength(props.propertyID, props.applications) > 0)
-//                 ?
-
-
-//                 <React.Fragment>
-//                     <Badge className="red" newIcon>{searchLength(props.propertyID, props.applications)}</Badge>
-
-//                     <Modal header={props.address} trigger={<Button>New Applications</Button>}>{
-//                         !(searchGetAllApps(props.propertyID, props.applications)) === null ?
-//                             null
-//                             :
-//                             searchGetAllApps(props.propertyID, props.applications).map(applicationData =>
-//                                 <ModalApplicationCard
-//                                     key={applicationData._id}
-//                                     managerID={applicationData.managerID}
-//                                     tenantID={applicationData.tenantID}
-//                                     propertyID={applicationData.propertyID}
-//                                     pets={applicationData.pets}
-//                                     criminalRecord={applicationData.criminalRecord}
-//                                     creditScore={applicationData.creditScore}
-//                                     adults={applicationData.adults}
-//                                     kids={applicationData.kids}
-//                                     status={applicationData.status}
-//                                 />
-//                             )
-//                     }</Modal>
-//                 </React.Fragment>
-//                 : null

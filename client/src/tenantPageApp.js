@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router} from 'react-router-dom';
 
 //COMPONENTS
-import PropertyCard from "./components/ManagerPage/propertieCards";
 import TenantPropertyCard from "./components/TenantComponents/PropertyCard/TenantPropertyCard"
 
 //API TO Herpestinae

@@ -52,13 +52,12 @@ let signInForm = props => {
             username: localStorage.getItem("username"),
         }
 
-        API.findAllUpdates(data).then(res => this.props.getUpdates(res.data)).catch(err => console.log(err));
+        API.findAllUpdates(data).then(res => props.getUpdates(res.data)).catch(err => console.log(err));
 
         API.tenantFindAllPropertiesToRent(data).then((res) => {
             props.importProperties(res.data)
             props.history.push("/Tenant");
         }).catch(err => console.log(err)); 
-
         
     }
 
@@ -87,14 +86,12 @@ let signInForm = props => {
             token: localStorage.getItem("token"),
             username: localStorage.getItem("username")
         }
-        API.findAllProperties(data).then((res) => {
-            props.importProperties(res.data)
-        } ).catch(err => console.log(err));  
+        API.findAllProperties(data).then(res => { props.importProperties(res.data)} ).catch(err => console.log(err));  
 
-        API.getUpdatesFromDatabase(data).then((res) => {
-            props.setUpdates(res.data)
+        API.getUpdatesFromDatabase(data).then(res => { 
+            props.setUpdates(res.data);
             props.history.push("/Manager");
-        } ).catch(err => console.log(err));  
+        }).catch(err => console.log(err));  
 
          
                 //  {props.importProperties(res.data)}

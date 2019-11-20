@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Modal, Button, Badge, RadioGroup } from "react-materialize"
+import { Row, Col, Modal, Button, Badge, RadioGroup, MediaBox } from "react-materialize"
 
 //REDUX FORMS
 import { Field, reduxForm } from 'redux-form';
@@ -59,7 +59,7 @@ function seenUpdates(updates) {
 
 
 
-function checkIfPropertyHasApplications(propertyID, applicationsArray){
+function checkIfPropertyHasApplications(propertyID, applicationsArray) {
     let applicationstoCardArray = []
 
     for (var i = 0; i < applicationsArray.length; i++) {
@@ -71,7 +71,7 @@ function checkIfPropertyHasApplications(propertyID, applicationsArray){
 }
 
 
-function checkIfPropertyHasUpdates(propertyID, updatesArray){
+function checkIfPropertyHasUpdates(propertyID, updatesArray) {
     let updatestoCardArray = []
 
     for (var i = 0; i < updatesArray.length; i++) {
@@ -85,60 +85,82 @@ function checkIfPropertyHasUpdates(propertyID, updatesArray){
 function ManagerPropertyCard(props) {
     return (
         <div className="container">
-            <Row>
-                <Col s={12} m={12} xl={12}>
-                    <div className="card blue-grey darken-1">
-                        <div className="card-content white-text">
-                            <span className="card-title center-align">{props.address}, {props.city}, {props.state} {props.postalCode} </span>
 
-                            { //LOGIC FOR UPDATES MODAL RENDERING
-                                checkIfPropertyHasUpdates(props.propertyID, props.updates).length > 0 
-                                ?
-                                <Modal header={props.address} trigger={<Button>Updates</Button>}>
-                                {
-                                    checkIfPropertyHasUpdates(props.propertyID, props.updates).map(renderAllUpdates => (
-                                        <ManagerUpdatesCard 
+            <div class="card blue-grey darken-1">
+                <div class="card-content white-text">
+                <Row>
+                <Col s={12} m={12} l={12} xl={12}>
+                    <span className="card-title center-align">{props.address}, {props.city}, {props.state} {props.postalCode} </span>
+                </Col>
+            </Row>
+
+
+
+            <Row>
+                <Col s={9} m={9} l={9} xl={9}>
+                    <p>Here be more info about property</p>
+                </Col>
+
+                <Col s={3} m={3} l={3} xl={3} id="imagesColumn">
+                    <MediaBox>
+                        <img src="http://eliteconnectre.com/wp-content/themes/eliteconnectrealestate/images/propertyPlaceholder.png" width="150" alt="" />
+                    </MediaBox>
+
+                    <MediaBox>
+                        <img src="https://www.ekcreditunion.co.uk/wp-content/uploads/2018/02/Blank-Silhouette-768x768.jpg" width="150" alt="" />
+                    </MediaBox>
+                </Col>
+            </Row>
+
+            <Row>
+                { //LOGIC FOR UPDATES MODAL RENDERING
+                    checkIfPropertyHasUpdates(props.propertyID, props.updates).length > 0
+                        ?
+                        <Modal header={props.address} trigger={<Button>Updates</Button>}>
+                            {
+                                checkIfPropertyHasUpdates(props.propertyID, props.updates).map(renderAllUpdates => (
+                                    <ManagerUpdatesCard
                                         key={renderAllUpdates.message}
                                         type={renderAllUpdates.type}
                                         message={renderAllUpdates.message}
                                         status={renderAllUpdates.status}
                                         {...props}
-                                        />
-                                    ))
-                                }
-                                </Modal>
-                                :
-                                null
+                                    />
+                                ))
                             }
+                        </Modal>
+                        :
+                        null
+                }
 
-                            {   //LOGIC FOR APPLICATIONS MODAL RENDERING
-                                checkIfPropertyHasApplications(props.propertyID, props.applications).length > 0
-                                 ?
-                                <Modal header={props.address} trigger={<Button>Applications</Button>}>
-                                {
-                                    checkIfPropertyHasApplications(props.propertyID, props.applications).map(renderAllApplications => (
-                                        <ManagerApplicationsCard 
+                {   //LOGIC FOR APPLICATIONS MODAL RENDERING
+                    checkIfPropertyHasApplications(props.propertyID, props.applications).length > 0
+                        ?
+                        <Modal header={props.address} trigger={<Button>Applications</Button>}>
+                            {
+                                checkIfPropertyHasApplications(props.propertyID, props.applications).map(renderAllApplications => (
+                                    <ManagerApplicationsCard
                                         key={renderAllApplications._id}
-                                       managerID={renderAllApplications.managerID}
-                                       tenantID={renderAllApplications.tenantID}
-                                       propertyID={renderAllApplications.propertyID}
-                                       pets={renderAllApplications.pets}
-                                       criminalRecord={renderAllApplications.criminalRecord}
-                                       creditScore={renderAllApplications.creditScore}
-                                       adults={renderAllApplications.adults}
-                                       kids={renderAllApplications.kids}
-                                       status={renderAllApplications.status}
-                                        />
-                                    ))
-                                }
-                                </Modal>
-                                :
-                                null
+                                        managerID={renderAllApplications.managerID}
+                                        tenantID={renderAllApplications.tenantID}
+                                        propertyID={renderAllApplications.propertyID}
+                                        pets={renderAllApplications.pets}
+                                        criminalRecord={renderAllApplications.criminalRecord}
+                                        creditScore={renderAllApplications.creditScore}
+                                        adults={renderAllApplications.adults}
+                                        kids={renderAllApplications.kids}
+                                        status={renderAllApplications.status}
+                                    />
+                                ))
                             }
-                        </div>
-                    </div>
-                </Col>
+                        </Modal>
+                        :
+                        null
+                }
             </Row>
+                </div>
+            </div>
+            
         </div>
     )
 }
@@ -146,158 +168,3 @@ function ManagerPropertyCard(props) {
 export default withRouter(reduxForm({
     form: 'tenantApplicationForm' // a unique identifier for this form
 })(ManagerPropertyCard));
-
-
-
-
-
-
-
-
-
-
-
-
-// { //-------------------SHOW APPLICATIONS AND BADGE IF APPLICATIONS EXIST FOR PROPERTY----------TENANT---------//
-//     props.renting === "true" && props.managerORTenant === "Tenant"
-//         ?
-//         <React.Fragment>
-
-//             <Modal header={props.address} trigger={<Button>Add Updates</Button>}>
-//                 <label htmlFor="type">Type</label>
-//                 <Field name="type" component="input" type="text" placeholder="Repair? Request? FYI?" />
-
-//                 <label htmlFor="message">Message</label>
-//                 <Field name="message" component="input" type="text" />
-//                 <Button onClick={() => sendUpdateToManager(props)}>Send Update!</Button>
-//             </Modal>
-
-//             {
-
-//                 searchLength(props.propertyID, props.updates) === 0
-//                     ?
-//                     null
-//                     :
-//                     searchLength(props.propertyID, props.updates) > 0
-//                         ?
-
-//                         <React.Fragment>
-
-//                             <Modal header={props.address} trigger={<Button>Check Updates</Button>}>
-//                             <Button onClick={() => seenUpdates(props.updates)}>Mark As Seen</Button>
-
-//                             {props.updates.map(updatesToModal => (
-//                             <ModalUpdateCard
-//                                 key={updatesToModal.message}
-//                                 type={updatesToModal.type}
-//                                 message={updatesToModal.message}
-//                                 status={updatesToModal.status}
-//                                 {...props}
-//                             />
-//                         ))}
-
-//                             </Modal>
-
-//                             {
-//                                 searchGetAllNonPendingUpdates(props.propertyID, props.updates) > 0 ?
-
-//                                 <Badge className="red" newIcon>{searchGetAllNonPendingUpdates(props.propertyID, props.updates)}</Badge>
-
-//                                 :
-
-//                                 <Badge className="red" newIcon>0</Badge>
-
-//                             }
-
-
-
-//                         </React.Fragment>
-
-//                         :
-//                         null
-
-//             }
-
-
-
-//         </React.Fragment>
-
-//         :
-//         props.renting === "false" && props.managerORTenant === "Tenant"
-//             ?
-//             <Modal header="Apply Now!" trigger={<Button>Apply</Button>}>
-//                 <label htmlFor="pets">Pets</label>
-//                 <Field name="pets" component="input" type="text" />
-
-//                 <label htmlFor="criminalRecord">Criminal Record</label>
-//                 <Field name="criminalRecord" component="input" type="text" />
-
-//                 <label htmlFor="creditScore">Credit Score</label>
-//                 <Field name="creditScore" component="input" type="text" />
-
-//                 <label htmlFor="adults">Adults</label>
-//                 <Field name="adults" component="input" type="text" />
-
-//                 <label htmlFor="kids">Children</label>
-//                 <Field name="kids" component="input" type="text" />
-//                 <Button onClick={() => sendApplication(props)}>Send Application</Button>
-//             </Modal>
-//             :
-//             props.managerORTenant === "Manager" && props.updates.length > 0
-//                 ?
-
-//                 <React.Fragment>
-//                     <Badge className="red" >{props.updates.length} New Updates!</Badge>
-//                     <Modal header={props.address} trigger={<Button>Updates</Button>}>
-//                         {props.updates.map(updatesToModal => (
-//                             <ModalUpdateCard
-//                                 key={updatesToModal.message}
-//                                 type={updatesToModal.type}
-//                                 message={updatesToModal.message}
-//                                 {...props}
-//                             />
-//                         ))}
-//                     </Modal>
-//                 </React.Fragment>
-//                 :
-//                 null
-// }
-
-
-// { //-------------------SHOW APPLICATIONS AND BADGE IF APPLICATIONS EXIST FOR PROPERTY---------MANAGER----------//
-//     props.managerORTenant === "Tenant"
-//         ?
-//         null
-//         :
-//         (props.managerORTenant === "Manager" && searchLength(props.propertyID, props.applications) === 0)
-//             ?
-//             null
-//             :
-//             (props.managerORTenant === "Manager" && searchLength(props.propertyID, props.applications) > 0)
-//                 ?
-
-
-//                 <React.Fragment>
-//                     <Badge className="red" newIcon>{searchLength(props.propertyID, props.applications)}</Badge>
-
-//                     <Modal header={props.address} trigger={<Button>New Applications</Button>}>{
-//                         !(searchGetAllApps(props.propertyID, props.applications)) === null ?
-//                             null
-//                             :
-//                             searchGetAllApps(props.propertyID, props.applications).map(applicationData =>
-//                                 <ModalApplicationCard
-//                                     key={applicationData._id}
-//                                     managerID={applicationData.managerID}
-//                                     tenantID={applicationData.tenantID}
-//                                     propertyID={applicationData.propertyID}
-//                                     pets={applicationData.pets}
-//                                     criminalRecord={applicationData.criminalRecord}
-//                                     creditScore={applicationData.creditScore}
-//                                     adults={applicationData.adults}
-//                                     kids={applicationData.kids}
-//                                     status={applicationData.status}
-//                                 />
-//                             )
-//                     }</Modal>
-//                 </React.Fragment>
-//                 : null

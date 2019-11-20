@@ -33,6 +33,7 @@ const loggedReducer = function(state = initialState, action) {
           managerORtenant: "",
           properties: [],
           applications: [],
+          updates: [],
           tenantUpdates: [],
           renting: null
         }
