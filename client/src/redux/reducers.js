@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { reducer as formReducer } from 'redux-form';
-import { FROM_ACTION_LOGIN, FROM_NAVBAR_LOGOUT, IMPORT_PROPERTIES, SET_APPLICATIONS_FROM_DB, SET_UPDATES_FROM_DB, GET_UPDATES_FROM_DB} from './actions';
+import { FROM_ACTION_LOGIN, FROM_NAVBAR_LOGOUT, IMPORT_PROPERTIES, SET_APPLICATIONS_FROM_DB, SET_UPDATES_FROM_DB, GET_UPDATES_FROM_DB, CONNECTING_TO_HERPESTIDAE} from './actions';
 
 const initialState = {
     token: null,
@@ -9,7 +9,8 @@ const initialState = {
     applications: [],
     updates: [],
     tenantUpdates: [],
-    renting: null
+    renting: null,
+    connectingToHerpestidae: false
 };
 
 
@@ -36,6 +37,12 @@ const loggedReducer = function(state = initialState, action) {
           updates: [],
           tenantUpdates: [],
           renting: null
+        }
+
+        case CONNECTING_TO_HERPESTIDAE:
+        return {
+          ...state,
+          connectingToHerpestidae: action.yuhOrNah
         }
 
         case GET_UPDATES_FROM_DB:

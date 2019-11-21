@@ -1,6 +1,7 @@
 import React from "react";
 import { Row, Col, Card, Button, Chip } from "react-materialize"
 import { withRouter } from 'react-router-dom';
+import { connect } from "react-redux";
 
 
 // //API
@@ -23,7 +24,7 @@ function acceptFYI(props) {
 
     console.log(sendDataForUpdates)
 
-
+    
     API.changeStatusOfUpdates(sendDataForUpdates).then(res => console.log(res)).catch(err => console.log(err))
 }
 
@@ -70,6 +71,11 @@ function ManagerUpdatesCard(props) {
                         <h5>{props.type}</h5>
                         <p>{props.message}</p>
                         {
+                            props.status !== "Pending" ?
+                            <Chip>
+                            {props.status}
+                            </Chip>
+                            :
                             props.type === "FYI" 
                             ?
                             <Button waves="light" modal="close" onClick={() => acceptFYI(props)}>Got It!</Button>
@@ -86,4 +92,5 @@ function ManagerUpdatesCard(props) {
 
 
 
-export default withRouter(ManagerUpdatesCard);
+
+export default withRouter(connect()(ManagerUpdatesCard));

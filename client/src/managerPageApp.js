@@ -16,7 +16,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 //ACTIONS
-import { importProperties } from "./redux/actions";
+import { importProperties, connectingToHerpestidaeOrNahFam, setApplications, setUpdates } from "./redux/actions";
 
 //REDUX FORM
 import { Field, reduxForm } from 'redux-form';
@@ -25,16 +25,15 @@ import { Field, reduxForm } from 'redux-form';
 import { Modal, Button } from "react-materialize";
 
 
-const addProperty = (event) => {
-  event.preventDefault();
+const addProperty = (props) => {
   const TEST = store.getState().form.addProperty.values;
   TEST.vacant = true;
   TEST.updates = [];
   TEST.manager = store.getState().loggedReducer.username;
   TEST.tenant = null;
   TEST.token = store.getState().loggedReducer.token;
-  console.log(TEST);
 
+  props.connectingToHerpestidaeOrNahFam(true);
   API.addProperty(TEST).then(res => console.log(res)).catch(err => console.log(err));
 }
 
@@ -47,6 +46,9 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       importProperties,
+      connectingToHerpestidaeOrNahFam,
+      setApplications,
+      setUpdates
     },
     dispatch
   );
@@ -54,9 +56,7 @@ const mapDispatchToProps = dispatch =>
 
 class ManagerPage extends Component {
 
-  // componentDidMount() {
-
-  // }
+  
 
   render() {
     return <Router>
@@ -78,7 +78,7 @@ class ManagerPage extends Component {
               <Field name="zipcode" component="input" type="text" />
               <label htmlFor="rent">Rent</label>
               <Field name="rent" component="input" type="number" />
-              <Button onClick={addProperty}>Add Property</Button>
+              <Button onClick={() => addProperty(this.props)}>Add Property</Button>
             </Modal>
           </div>
 

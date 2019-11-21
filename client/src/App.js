@@ -18,7 +18,7 @@ import TenantPage from "./tenantPageApp";
 //REDUX 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { fromReducerLogin, importProperties, setApplications, setUpdates, getUpdates } from "./redux/actions";
+import { fromReducerLogin, importProperties, setApplications, setUpdates, getUpdates, connectingToHerpestidaeOrNahFam } from "./redux/actions";
 
 //API TO Herpestinae
 import API from "./utils/API";
@@ -34,6 +34,7 @@ const mapDispatchToProps = dispatch =>
       importProperties,
       setApplications,
       setUpdates,
+      connectingToHerpestidaeOrNahFam,
       getUpdates
     },
     dispatch
@@ -103,6 +104,27 @@ class App extends Component {
   }
 
 
+  componentDidUpdate() {
+    if (this.props.storeToProps.loggedReducer.connectingToHerpestidae === true) {
+      const data = {
+        token: localStorage.getItem("token"),
+        username: localStorage.getItem("username")
+      }
+      API.findAllProperties(data).then((res) => { this.props.importProperties(res.data) }).catch(err => console.log(err));
+
+      //GET ALL APPLICATIONS
+      API.getApplicationsFromDatabase(data).then(res => this.props.setApplications(res.data)).catch(err => console.log(err));
+
+      //GET ALL UPDATES
+      API.getUpdatesFromDatabase(data).then((res) => {
+        this.props.setUpdates(res.data)
+        this.props.connectingToHerpestidaeOrNahFam(false)
+      }).catch(err => console.log(err));
+    }
+  }
+
+
+
   render() {
     return (
       <Router>
@@ -124,7 +146,7 @@ class App extends Component {
 
 
             {/*--------------------ROUTES USED FOR MANAGER--------------------*/}
-            <PrivateRoute exact path="/Manager" updates={this.props.storeToProps.loggedReducer.updates} properties={this.props.storeToProps.loggedReducer.properties} token={this.props.storeToProps.loggedReducer.token} type={this.props.storeToProps.loggedReducer.managerORtenant} username={this.props.storeToProps.loggedReducer.username} applications={this.props.storeToProps.loggedReducer.applications} component={ManagerPage} />
+            <PrivateRoute exact path="/Manager" updates={this.props.storeToProps.loggedReducer.updates} properties={this.props.storeToProps.loggedReducer.properties} token={this.props.storeToProps.loggedReducer.token} type={this.props.storeToProps.loggedReducer.managerORtenant} username={this.props.storeToProps.loggedReducer.username} applications={this.props.storeToProps.loggedReducer.applications} connectingToHerpestidaeOrNahFam={this.props.storeToProps.loggedReducer.connectingToHerpestidae} component={ManagerPage} />
 
             {/*--------------------ROUTES USED FOR TENANT--------------------*/}
             <PrivateRoute exact path="/Tenant" tenantUpdates={this.props.storeToProps.loggedReducer.tenantUpdates} properties={this.props.storeToProps.loggedReducer.properties} token={this.props.storeToProps.loggedReducer.token} type={this.props.storeToProps.loggedReducer.managerORtenant} username={this.props.storeToProps.loggedReducer.username} renting={this.props.storeToProps.loggedReducer.renting} component={TenantPage} />

@@ -30,6 +30,18 @@ function searchGetAllNonPendingUpdates(nameKey, myArray) {
     return newArray.length;
 }
 
+function getAllPendingUpdates(nameKey, myArray) {
+    let newArray = []
+
+    for (var i = 0; i < myArray.length; i++) {
+
+        if (myArray[i].propertyID === nameKey && myArray[i].status === "Pending") {
+            newArray.push(myArray[i])
+        }
+    }
+    return newArray.length;
+}
+
 function getAllNonPendingUpdates(updatesArray) {
     let newArray = []
 
@@ -86,81 +98,93 @@ function ManagerPropertyCard(props) {
     return (
         <div className="container">
 
-            <div class="card blue-grey darken-1">
-                <div class="card-content white-text">
-                <Row>
-                <Col s={12} m={12} l={12} xl={12}>
-                    <span className="card-title center-align">{props.address}, {props.city}, {props.state} {props.postalCode} </span>
-                </Col>
-            </Row>
-
-
-
-            <Row>
-                <Col s={9} m={9} l={9} xl={9}>
-                    <p>Here be more info about property</p>
-                </Col>
-
-                <Col s={3} m={3} l={3} xl={3} id="imagesColumn">
-                    <MediaBox>
-                        <img src="http://eliteconnectre.com/wp-content/themes/eliteconnectrealestate/images/propertyPlaceholder.png" width="150" alt="" />
-                    </MediaBox>
-
-                    <MediaBox>
-                        <img src="https://www.ekcreditunion.co.uk/wp-content/uploads/2018/02/Blank-Silhouette-768x768.jpg" width="150" alt="" />
-                    </MediaBox>
-                </Col>
-            </Row>
-
-            <Row>
-                { //LOGIC FOR UPDATES MODAL RENDERING
-                    checkIfPropertyHasUpdates(props.propertyID, props.updates).length > 0
-                        ?
-                        <Modal header={props.address} trigger={<Button>Updates</Button>}>
+            <div className="card blue-grey darken-1">
+                <div className="card-content white-text">
+                    <Row>
+                        <Col s={12} m={12} l={12} xl={12}>
+                            <span className="card-title center-align">{props.address}, {props.city}, {props.state} {props.postalCode} </span>
                             {
-                                checkIfPropertyHasUpdates(props.propertyID, props.updates).map(renderAllUpdates => (
-                                    <ManagerUpdatesCard
-                                        key={renderAllUpdates.message}
-                                        type={renderAllUpdates.type}
-                                        message={renderAllUpdates.message}
-                                        status={renderAllUpdates.status}
-                                        {...props}
-                                    />
-                                ))
+                            getAllPendingUpdates(props.propertyID, props.updates) > 0 
+                            ?
+                            <Badge className="red" newIcon>{getAllPendingUpdates(props.propertyID, props.updates)}</Badge>
+                            :
+                            null
                             }
-                        </Modal>
-                        :
-                        null
-                }
+                        </Col>
+                    </Row>
 
-                {   //LOGIC FOR APPLICATIONS MODAL RENDERING
-                    checkIfPropertyHasApplications(props.propertyID, props.applications).length > 0
-                        ?
-                        <Modal header={props.address} trigger={<Button>Applications</Button>}>
-                            {
-                                checkIfPropertyHasApplications(props.propertyID, props.applications).map(renderAllApplications => (
-                                    <ManagerApplicationsCard
-                                        key={renderAllApplications._id}
-                                        managerID={renderAllApplications.managerID}
-                                        tenantID={renderAllApplications.tenantID}
-                                        propertyID={renderAllApplications.propertyID}
-                                        pets={renderAllApplications.pets}
-                                        criminalRecord={renderAllApplications.criminalRecord}
-                                        creditScore={renderAllApplications.creditScore}
-                                        adults={renderAllApplications.adults}
-                                        kids={renderAllApplications.kids}
-                                        status={renderAllApplications.status}
-                                    />
-                                ))
-                            }
-                        </Modal>
-                        :
-                        null
-                }
-            </Row>
+
+
+                    <Row className="center-align">
+                        <Col s={10} m={10} l={10} xl={10}>
+                            <p>Here be more info about property</p>
+                        </Col>
+
+                        <Col s={2} m={2} l={2} xl={2} id="imagesColumn">
+
+                            <Row>
+                                <MediaBox>
+                                    <img src="http://eliteconnectre.com/wp-content/themes/eliteconnectrealestate/images/propertyPlaceholder.png" width="150" alt="" />
+                                </MediaBox>
+                            </Row>
+
+                            <Row>
+                                <MediaBox>
+                                    <img src="https://www.ekcreditunion.co.uk/wp-content/uploads/2018/02/Blank-Silhouette-768x768.jpg" width="150" alt="" />
+                                </MediaBox>
+                            </Row>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        { //LOGIC FOR UPDATES MODAL RENDERING
+                            checkIfPropertyHasUpdates(props.propertyID, props.updates).length > 0
+                                ?
+                                <Modal header={props.address} trigger={<Button>Updates</Button>}>
+                                    {
+                                        checkIfPropertyHasUpdates(props.propertyID, props.updates).map(renderAllUpdates => (
+                                            <ManagerUpdatesCard
+                                                key={renderAllUpdates.message}
+                                                type={renderAllUpdates.type}
+                                                message={renderAllUpdates.message}
+                                                status={renderAllUpdates.status}
+                                                {...props}
+                                            />
+                                        ))
+                                    }
+                                </Modal>
+                                :
+                                null
+                        }
+
+                        {   //LOGIC FOR APPLICATIONS MODAL RENDERING
+                            checkIfPropertyHasApplications(props.propertyID, props.applications).length > 0
+                                ?
+                                <Modal header={props.address} trigger={<Button>Applications</Button>}>
+                                    {
+                                        checkIfPropertyHasApplications(props.propertyID, props.applications).map(renderAllApplications => (
+                                            <ManagerApplicationsCard
+                                                key={renderAllApplications._id}
+                                                managerID={renderAllApplications.managerID}
+                                                tenantID={renderAllApplications.tenantID}
+                                                propertyID={renderAllApplications.propertyID}
+                                                pets={renderAllApplications.pets}
+                                                criminalRecord={renderAllApplications.criminalRecord}
+                                                creditScore={renderAllApplications.creditScore}
+                                                adults={renderAllApplications.adults}
+                                                kids={renderAllApplications.kids}
+                                                status={renderAllApplications.status}
+                                            />
+                                        ))
+                                    }
+                                </Modal>
+                                :
+                                null
+                        }
+                    </Row>
                 </div>
             </div>
-            
+
         </div>
     )
 }
