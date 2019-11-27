@@ -22,7 +22,7 @@ import { importProperties, connectingToHerpestidaeOrNahFam, setApplications, set
 import { Field, reduxForm } from 'redux-form';
 
 //REACT MATERALIZE
-import { Modal, Button } from "react-materialize";
+import { Modal, Button, Preloader  } from "react-materialize";
 
 
 const addProperty = (props) => {
@@ -54,6 +54,7 @@ const mapDispatchToProps = dispatch =>
   );
 
 
+
 class ManagerPage extends Component {
 
   
@@ -63,7 +64,7 @@ class ManagerPage extends Component {
       <div>
         <Row>
           <div className="container center-align">
-            <h1>Welcome {this.props.username}</h1>
+            <h1>Welcome, {this.props.username}.</h1>
           </div>
 
           <div className="container center-align">
@@ -84,9 +85,10 @@ class ManagerPage extends Component {
 
         </Row>
 
-        <Row>
+        <Row> 
+          
           {this.props.properties.map(properties => (
-
+            
             <ManagerPropertyCard
               key={properties.address}
               address={properties.address}
@@ -101,8 +103,10 @@ class ManagerPage extends Component {
               managerORTenant={this.props.type}
               applications={this.props.applications}
               propertyID={properties._id}
+              propertyImgs={properties.propertyImgs}
             />))
           }
+        
         </Row>
       </div>
     </Router>

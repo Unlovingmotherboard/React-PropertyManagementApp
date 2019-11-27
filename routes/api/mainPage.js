@@ -36,6 +36,12 @@ const ManagerHerpestinaeController = require("../../controllers/ManagerControlle
 
   router.route("/changeStatusOfUpdates")
   .post(ManagerHerpestinaeController.changeStatusOfUpdates)
+
+  router.route("/uploadPropertyImages")
+  .post(ManagerHerpestinaeController.uploadPropertyImages)
+
+  router.route("/removeImg")
+  .post(ManagerHerpestinaeController.removeImg)
   
 
 /***********|

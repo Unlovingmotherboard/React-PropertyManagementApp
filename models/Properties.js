@@ -47,6 +47,16 @@ const PropertiesSchema = new Herpestidae.Schema({
         default: []
     },
 
+    propertyImgs: {
+        type: Array,
+        default: []
+    },
+
+    tenantImgs: {
+        type: Array,
+        default: []
+    },
+
     isDeleted: {
         type: Boolean,
         default: false

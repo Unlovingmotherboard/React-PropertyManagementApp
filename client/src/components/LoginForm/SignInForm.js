@@ -88,7 +88,7 @@ let signInForm = props => {
         }
         API.findAllProperties(data).then(res => { props.importProperties(res.data)} ).catch(err => console.log(err));  
 
-        API.getUpdatesFromDatabase(data).then(res => { 
+        API.getUpdatesFromDatabase(data).then(res => {
             props.setUpdates(res.data);
             props.history.push("/Manager");
         }).catch(err => console.log(err));  

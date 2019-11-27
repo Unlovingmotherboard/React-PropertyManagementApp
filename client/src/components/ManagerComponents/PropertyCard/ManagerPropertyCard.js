@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Modal, Button, Badge, RadioGroup, MediaBox } from "react-materialize"
+import { Row, Col, Modal, Button, Badge, RadioGroup, MediaBox, Carousel, Chip } from "react-materialize"
 
 //REDUX FORMS
 import { Field, reduxForm } from 'redux-form';
@@ -14,9 +14,73 @@ import store from "../../../redux/store";
 import ManagerApplicationsCard from "../Applications/ManagerSeeApplications"
 import ManagerUpdatesCard from "../Updates/ManagerSeeTenantUpdates"
 
+//IMPORT CSS
+import "./managerPropertyCardStyle.css"
 
 //API
 import API from "../../../utils/API";
+
+
+//REDUX IMPORTS 
+import { showConfirmationModal, connectingToHerpestidaeOrNahFam } from "../../../redux/actions";
+
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+
+const mapDispatchToProps = dispatch =>
+    bindActionCreators(
+        {
+            showConfirmationModal,
+            connectingToHerpestidaeOrNahFam
+        },
+        dispatch
+    );
+
+
+
+const confirmRemoveIMG = (props) => {
+    props.showConfirmationModal(true)
+    console.log("You sure?")
+}
+
+
+
+
+const removeImage = (e, props) => {
+
+    let removeImgObj = {};
+
+    removeImgObj.imgID = e.target.getAttribute("id").trim();
+    removeImgObj.propertyID = props.propertyID;
+
+    props.connectingToHerpestidaeOrNahFam(true)
+    API.managerDeleteImages(removeImgObj).then(res => console.log(res)).catch(err => console.log(err));
+}
+
+const onChange = (e, props) => {
+    let files = e.target.files;
+    let imgDataToHerpestidae = {};
+
+    let reader = new FileReader();
+    reader.readAsDataURL(files[0]);
+
+    reader.onload = (e) => {
+        imgDataToHerpestidae.imgDta = { file: e.target.result }
+        imgDataToHerpestidae.propertyID = props.propertyID;
+        props.connectingToHerpestidaeOrNahFam(true)
+        API.uploadPropertyImages(imgDataToHerpestidae).then(res => console.log(res)).catch(err => console.log(err));
+
+    }
+}
+
+
+
+
+
+
+
+
+
 
 function searchGetAllNonPendingUpdates(nameKey, myArray) {
     let newArray = []
@@ -67,8 +131,20 @@ function seenUpdates(updates) {
 
 
 
+const getImgFromBase64 = (propertyImgs) => {
 
+    let imagesArray = []
 
+    if (propertyImgs.length > 0) {
+        imagesArray.push(propertyImgs[0].img64.file);
+        return imagesArray;
+    }
+
+    else {
+        return ["http://eliteconnectre.com/wp-content/themes/eliteconnectrealestate/images/propertyPlaceholder.png"]
+    }
+
+}
 
 
 function checkIfPropertyHasApplications(propertyID, applicationsArray) {
@@ -96,47 +172,97 @@ function checkIfPropertyHasUpdates(propertyID, updatesArray) {
 
 function ManagerPropertyCard(props) {
     return (
-        <div className="container">
-
-            <div className="card blue-grey darken-1">
-                <div className="card-content white-text">
-                    <Row>
+        <div className="container z-depth-2">
+            <div className="card">
+                <div className="card-content white-text center-align">
+                    <Row className="blue accent-1">
                         <Col s={12} m={12} l={12} xl={12}>
-                            <span className="card-title center-align">{props.address}, {props.city}, {props.state} {props.postalCode} </span>
+                            <span className="card-title">{props.address}, {props.city}, {props.state} {props.postalCode} </span>
                             {
-                            getAllPendingUpdates(props.propertyID, props.updates) > 0 
-                            ?
-                            <Badge className="red" newIcon>{getAllPendingUpdates(props.propertyID, props.updates)}</Badge>
-                            :
-                            null
+                                getAllPendingUpdates(props.propertyID, props.updates) > 0
+                                    ?
+                                    <Badge className="red" newIcon>{getAllPendingUpdates(props.propertyID, props.updates)}</Badge>
+                                    :
+                                    null
+                            }
+
+                            {
+                                checkIfPropertyHasApplications(props.propertyID, props.applications).length > 0
+                                    ?
+                                    <div className="center-align">
+                                        <p className="applicationsBadge">{checkIfPropertyHasApplications(props.propertyID, props.applications).length} New Applications</p>
+                                    </div>
+                                    :
+                                    null
                             }
                         </Col>
                     </Row>
 
 
 
-                    <Row className="center-align">
-                        <Col s={10} m={10} l={10} xl={10}>
-                            <p>Here be more info about property</p>
+                    <Row>
+
+                        {/*COLUMN FOR PROPERTY INFO*/}
+                        <Col s={8} m={8} l={8} xl={8} className="propertyInfoArea z-depth-3">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rhoncus venenatis felis, in ultrices nunc fermentum sed. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum leo urna, facilisis vitae lacinia vitae, tincidunt vitae ex. Suspendisse ut risus tincidunt, consequat dui quis, aliquam quam. Nam eu dignissim neque. Donec vitae varius justo. Donec eleifend consectetur mattis. Curabitur mauris est, finibus et aliquet eget, aliquet at enim.
+
+Nulla efficitur lacinia purus, id varius ex. Sed consectetur hendrerit molestie. Ut sed vulputate metus. Fusce sit amet varius risus. Nunc tincidunt felis at suscipit cursus. Aliquam orci libero, elementum ac mauris sed, hendrerit dignissim nisi. Donec in metus in lacus eleifend gravida. Sed nec aliquet felis, quis egestas libero. Pellentesque quis leo iaculis, egestas lorem eget, bibendum nunc. In egestas faucibus feugiat. Aenean ac finibus velit.</p>
                         </Col>
 
-                        <Col s={2} m={2} l={2} xl={2} id="imagesColumn">
+                        {/*COLUMN FOR IMAGES*/}
+                        <Col s={3} m={3} l={3} xl={3} id="imagesColumn" className="z-depth-3">
 
                             <Row>
-                                <MediaBox>
-                                    <img src="http://eliteconnectre.com/wp-content/themes/eliteconnectrealestate/images/propertyPlaceholder.png" width="150" alt="" />
+                                {
+                                    props.vacant === true ?
+                                        <Chip>
+                                            Vacant
+                                    </Chip>
+                                        :
+                                        <Chip>
+                                            Not Vacant
+                                    </Chip>
+                                }
+                            </Row>
+
+                            <Row>
+                                <MediaBox width="200" alt="property" >
+                                    <img src={getImgFromBase64(props.propertyImgs)[0]}></img>
                                 </MediaBox>
+
+                                <Modal header="All Photos" trigger={<Button>All Photos</Button>}>
+                                    <Row>
+                                        {
+                                            props.propertyImgs.map(allImages => (
+                                                <React.Fragment key={allImages.id}>
+                                                    <div className="allPropertyImageDiv">
+                                                        <img className="responsive-img" src={allImages.img64.file} ></img>
+                                                        <Button id={allImages.id} onClick={(e) => removeImage(e, props)}>Remove</Button>
+                                                    </div>
+                                                </React.Fragment>
+                                            ))
+                                        }
+                                    </Row>
+
+                                    <Row>
+                                        <Modal header="Add Property" trigger={<Button>Upload Files</Button>}>
+                                            <input multiple type="file" name="file" onChange={(e) => onChange(e, props)}></input>
+                                        </Modal>
+                                    </Row>
+                                </Modal>
                             </Row>
 
                             <Row>
                                 <MediaBox>
-                                    <img src="https://www.ekcreditunion.co.uk/wp-content/uploads/2018/02/Blank-Silhouette-768x768.jpg" width="150" alt="" />
+                                    <img src="https://www.ekcreditunion.co.uk/wp-content/uploads/2018/02/Blank-Silhouette-768x768.jpg" width="200" alt="tenant" />
                                 </MediaBox>
                             </Row>
+
+
                         </Col>
                     </Row>
 
-                    <Row>
+                    <Row className="">
                         { //LOGIC FOR UPDATES MODAL RENDERING
                             checkIfPropertyHasUpdates(props.propertyID, props.updates).length > 0
                                 ?
@@ -184,10 +310,14 @@ function ManagerPropertyCard(props) {
                     </Row>
                 </div>
             </div>
-
         </div>
     )
 }
+
+ManagerPropertyCard = connect(
+    null,
+    mapDispatchToProps
+)(ManagerPropertyCard);
 
 export default withRouter(reduxForm({
     form: 'tenantApplicationForm' // a unique identifier for this form

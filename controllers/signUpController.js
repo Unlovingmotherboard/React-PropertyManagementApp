@@ -121,9 +121,6 @@ const CollectionNameController = {
             return res.send('Invalid Credentials').status(404);
         }
 
-        // email = email.toLowerCase();
-        console.log("testing");
-
         dbConnectToUserModel.find({ email: email }, (err, usersE) => {
 
             if (err) {

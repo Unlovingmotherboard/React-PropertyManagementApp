@@ -530,6 +530,55 @@ const ManagerController = {
         }
 
             
+    },
+
+    uploadPropertyImages: function (req, res) {
+
+        function makeid(length) {
+            var result           = '';
+            var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for ( var i = 0; i < length; i++ ) {
+               result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+         }
+
+         let {body} = req;
+
+         let imgData = {};
+
+         imgData.img64 = body.imgDta;
+
+         imgData.id = makeid(3);
+
+        PropertiesModel.findByIdAndUpdate({_id:body.propertyID},{$push: {propertyImgs: imgData}}, (err, fileUploadRes) => {
+            if (err) {
+                return res.send({
+                    success: false,
+                    message: "Error: Server Error!"
+                });
+            } 
+
+            if(fileUploadRes) {
+                return res.send({
+                    success: true,
+                    message: "It worked wooo!!"
+                })
+            }
+        });
+    },
+
+    removeImg: function (req, res) {
+        let {body} = req;
+
+        const propertyID = body.propertyID;
+        const imgID = body.imgID;
+
+        PropertiesModel.update(
+            { _id: propertyID },
+            { $pull: { 'propertyImgs': { id: imgID } } }
+          ).then(successfulres => res.send(successfulres)).catch(err => res.send(err));
     }
 };
 

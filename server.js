@@ -27,9 +27,9 @@ mongoose.Promise = Promise;
 /* BODY PARSERS */
 // node.js body parsing middleware avaiable under req.body
 const bodyParser = require('body-parser');
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb', extended: true}));
 app.use(bodyParser.text());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '100mb' }));
 
 /* LOGGERS */
 /* morgan set to 'dev':

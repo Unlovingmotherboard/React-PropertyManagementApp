@@ -1,0 +1,18 @@
+.allPropertyImageDiv {
+    margin: 30px;
+}
+
+
+.applicationsBadge {
+    background-color: rgb(108, 158, 37);
+    font-style: italic;
+    color: rgb(248, 255, 236);
+    min-width: 3rem;
+    padding: 0 6px;
+    height: 22px;
+    max-width: 170px;
+}
+
+.propertyInfoArea {
+    margin-right: 50px;
+}

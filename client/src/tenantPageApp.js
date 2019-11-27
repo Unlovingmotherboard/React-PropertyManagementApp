@@ -77,6 +77,7 @@ class TenantPage extends Component {
             managerORTenant={this.props.type}
             managerID={properties.managerID}
             propertyID={properties._id}
+            propertyImgs={properties.propertyImgs}
             />))
       
         :
@@ -94,6 +95,7 @@ class TenantPage extends Component {
             vacant={properties.vacant}
             managerORTenant={this.props.type}
             managerID={properties.managerID}
+            propertyImgs={properties.propertyImgs}
             />))
 
       }

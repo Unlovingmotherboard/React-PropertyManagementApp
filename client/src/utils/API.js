@@ -40,6 +40,14 @@ export default {
   assignTenantAndDeleteApplications: function(assignTenantAndDeleteApplicationsData) {
     return axios.post("/api/manager/assignTenantAndDeleteApplications", assignTenantAndDeleteApplicationsData);
   },
+
+  uploadPropertyImages: function(imgFiles) {
+    return axios.post("/api/manager/uploadPropertyImages", imgFiles);
+  },
+
+  managerDeleteImages: function(imgID) {
+    return axios.post("/api/manager/removeImg", imgID);
+  },
 //-----//-----MANAGER ROUTES-----//-----//
 
 

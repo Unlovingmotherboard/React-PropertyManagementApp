@@ -10,6 +10,7 @@ export const SET_APPLICATIONS_FROM_DB = "SET_APPLICATIONS_FROM_DB";
 export const SET_UPDATES_FROM_DB = "SET_UPDATES_FROM_DB";
 export const GET_UPDATES_FROM_DB = "GET_UPDATES_FROM_DB";
 export const CONNECTING_TO_HERPESTIDAE = "CONNECTING_TO_HERPESTIDAE";
+export const CONFIRMATION_MODAL_DISPLAY ="CONFIRMATION_MODAL_DISPLAY";
 
 
 export const connectingToHerpestidaeOrNahFam = (yuhOrNah) => {
@@ -18,6 +19,10 @@ export const connectingToHerpestidaeOrNahFam = (yuhOrNah) => {
 
 export const setFirstName = text => {
   return { type: SET_FIRSTNAME_FORM, firstName: text }
+}
+
+export const showConfirmationModal = showOrNah => {
+  return { type: CONFIRMATION_MODAL_DISPLAY, showOrNah: showOrNah }
 }
 
 export const fromReducerLogin = (token, manORten, userName, renting) => {
