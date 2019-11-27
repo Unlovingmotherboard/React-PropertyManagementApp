@@ -129,7 +129,7 @@ function TenantPropertyCard(props) {
                             </Row>
 
                             {
-                                props.renting === true ?
+                                props.renting === "true" ?
                                 <Row>
                                 <MediaBox>
                                     <img src="https://www.ekcreditunion.co.uk/wp-content/uploads/2018/02/Blank-Silhouette-768x768.jpg" width="200" alt="tenant" />
@@ -151,7 +151,7 @@ function TenantPropertyCard(props) {
 
                     <Row>
                         {
-                            props.renting === false ?
+                            props.renting === "true" ?
 
                                 <Modal header={props.address} trigger={<Button>Add Updates</Button>}>
                                     <label htmlFor="type">Type</label>
@@ -160,7 +160,6 @@ function TenantPropertyCard(props) {
                                     <Field name="message" component="input" type="text" />
                                     <Button onClick={() => sendUpdateToManager(props)}>Send Update!</Button>
                                 </Modal>
-
                                 :
                                 <Modal header={props.address} trigger={<Button>Apply</Button>}>
                                     <label htmlFor="pets">Pets</label>
@@ -179,10 +178,9 @@ function TenantPropertyCard(props) {
                                     <Field name="kids" component="input" type="text" />
                                     <Button onClick={() => sendApplication(props)}>Send Application</Button>
                                 </Modal>
-
                         }
 
-                        {props.renting === true ?
+                        {props.renting === "true" ?
                             <React.Fragment>
                                 <Modal header={props.address} trigger={<Button>Check Updates From Manager</Button>}>
                                     <Button onClick={() => seenUpdates(props.updates)}>Mark Updates As Seen</Button>

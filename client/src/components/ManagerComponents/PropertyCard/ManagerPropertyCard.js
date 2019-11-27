@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Modal, Button, Badge, RadioGroup, MediaBox, Carousel, Chip } from "react-materialize"
+import { Row, Col, Modal, Button, Badge, RadioGroup, MediaBox, Carousel, Chip, Tabs, Tab, DatePicker, TextInput } from "react-materialize"
 
 //REDUX FORMS
 import { Field, reduxForm } from 'redux-form';
@@ -22,7 +22,7 @@ import API from "../../../utils/API";
 
 
 //REDUX IMPORTS 
-import { showConfirmationModal, connectingToHerpestidaeOrNahFam } from "../../../redux/actions";
+import { showConfirmationModal, connectingToHerpestidaeOrNahFam, setDatePicker, setPayment, setExpenses } from "../../../redux/actions";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -31,7 +31,10 @@ const mapDispatchToProps = dispatch =>
     bindActionCreators(
         {
             showConfirmationModal,
-            connectingToHerpestidaeOrNahFam
+            connectingToHerpestidaeOrNahFam,
+            setDatePicker,
+            setPayment,
+            setExpenses
         },
         dispatch
     );
@@ -170,150 +173,190 @@ function checkIfPropertyHasUpdates(propertyID, updatesArray) {
     return updatestoCardArray;
 }
 
+
+
+
+
+const setDateRedux = (date, props) => {
+    props.setDatePicker(date);
+}
+
+const setPaymentRedux = (e, props) => {
+     props.setPayment(e.target.value);
+}
+
+const setExpensesRedux = (e, props) => {
+     props.setExpenses(e.target.value);
+}
+
+const sendToDB = (props) => {
+    console.log(store.getState().paymentFormReducer.payment)
+    console.log(store.getState().paymentFormReducer.expenses)
+    console.log(store.getState().paymentFormReducer.date)
+    console.log(props.tenant)
+    console.log(props.propertyID)
+}
+
 function ManagerPropertyCard(props) {
     return (
-        <div className="container z-depth-2">
-            <div className="card">
-                <div className="card-content white-text center-align">
-                    <Row className="blue accent-1">
-                        <Col s={12} m={12} l={12} xl={12}>
-                            <span className="card-title">{props.address}, {props.city}, {props.state} {props.postalCode} </span>
-                            {
-                                getAllPendingUpdates(props.propertyID, props.updates) > 0
-                                    ?
-                                    <Badge className="red" newIcon>{getAllPendingUpdates(props.propertyID, props.updates)}</Badge>
-                                    :
-                                    null
-                            }
+        <div className="propertyCard">
+            <div className="container">
+                <div className="card">
+                    <div className="card-content white-text center-align">
+                        <Row className="z-depth-1" id="propertyCardHeader">
+                            <Col s={12} m={12} l={12} xl={12}>
 
-                            {
-                                checkIfPropertyHasApplications(props.propertyID, props.applications).length > 0
-                                    ?
-                                    <div className="center-align">
-                                        <p className="applicationsBadge">{checkIfPropertyHasApplications(props.propertyID, props.applications).length} New Applications</p>
-                                    </div>
-                                    :
-                                    null
-                            }
-                        </Col>
-                    </Row>
+
+                                <Modal header={props.address} trigger={<p>Add Payment</p>}>
+                                    <DatePicker onChange={(e) => setDateRedux(e, props)}/>
+                                    <TextInput onChange={(e) => setExpensesRedux(e, props)} label="Expenses" />
+                                    <TextInput onChange={(e) => setPaymentRedux(e, props)} label="Payment" />
+                                    <Button onClick={() => sendToDB(props)}></Button>
+                                </Modal>
+                                {/*setDatePicker,
+            setPayment,
+            setExpenses*/}
 
 
 
-                    <Row>
 
-                        {/*COLUMN FOR PROPERTY INFO*/}
-                        <Col s={8} m={8} l={8} xl={8} className="propertyInfoArea z-depth-3">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rhoncus venenatis felis, in ultrices nunc fermentum sed. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum leo urna, facilisis vitae lacinia vitae, tincidunt vitae ex. Suspendisse ut risus tincidunt, consequat dui quis, aliquam quam. Nam eu dignissim neque. Donec vitae varius justo. Donec eleifend consectetur mattis. Curabitur mauris est, finibus et aliquet eget, aliquet at enim.
-
-Nulla efficitur lacinia purus, id varius ex. Sed consectetur hendrerit molestie. Ut sed vulputate metus. Fusce sit amet varius risus. Nunc tincidunt felis at suscipit cursus. Aliquam orci libero, elementum ac mauris sed, hendrerit dignissim nisi. Donec in metus in lacus eleifend gravida. Sed nec aliquet felis, quis egestas libero. Pellentesque quis leo iaculis, egestas lorem eget, bibendum nunc. In egestas faucibus feugiat. Aenean ac finibus velit.</p>
-                        </Col>
-
-                        {/*COLUMN FOR IMAGES*/}
-                        <Col s={3} m={3} l={3} xl={3} id="imagesColumn" className="z-depth-3">
-
-                            <Row>
+                                <span className="card-title">{props.address}, {props.city}, {props.state} {props.postalCode} </span>
                                 {
-                                    props.vacant === true ?
-                                        <Chip>
-                                            Vacant
-                                    </Chip>
+                                    getAllPendingUpdates(props.propertyID, props.updates) > 0
+                                        ?
+                                        <div className="center-align">
+                                            { //LOGIC FOR UPDATES MODAL RENDERING
+                                                checkIfPropertyHasUpdates(props.propertyID, props.updates).length > 0
+                                                    ?
+                                                    <Modal header={props.address} trigger={<p className="applicationsBadge">{getAllPendingUpdates(props.propertyID, props.updates)} New Updates</p>}>
+                                                        {
+                                                            checkIfPropertyHasUpdates(props.propertyID, props.updates).map(renderAllUpdates => (
+                                                                <ManagerUpdatesCard
+                                                                    key={renderAllUpdates.message}
+                                                                    type={renderAllUpdates.type}
+                                                                    message={renderAllUpdates.message}
+                                                                    status={renderAllUpdates.status}
+                                                                    {...props}
+                                                                />
+                                                            ))
+                                                        }
+                                                    </Modal>
+                                                    :
+                                                    null
+                                            }
+                                        </div>
                                         :
-                                        <Chip>
-                                            Not Vacant
-                                    </Chip>
+                                        null
                                 }
-                            </Row>
 
-                            <Row>
-                                <MediaBox width="200" alt="property" >
-                                    <img src={getImgFromBase64(props.propertyImgs)[0]}></img>
-                                </MediaBox>
+                                {
+                                    checkIfPropertyHasApplications(props.propertyID, props.applications).length > 0
+                                        ?
+                                        <div className="center-align">
 
-                                <Modal header="All Photos" trigger={<Button>All Photos</Button>}>
-                                    <Row>
-                                        {
-                                            props.propertyImgs.map(allImages => (
-                                                <React.Fragment key={allImages.id}>
-                                                    <div className="allPropertyImageDiv">
-                                                        <img className="responsive-img" src={allImages.img64.file} ></img>
-                                                        <Button id={allImages.id} onClick={(e) => removeImage(e, props)}>Remove</Button>
-                                                    </div>
-                                                </React.Fragment>
-                                            ))
-                                        }
-                                    </Row>
+                                            {   //LOGIC FOR APPLICATIONS MODAL RENDERING
+                                                checkIfPropertyHasApplications(props.propertyID, props.applications).length > 0
+                                                    ?
+                                                    <Modal header={props.address} trigger={<p className="applicationsBadge">{checkIfPropertyHasApplications(props.propertyID, props.applications).length} New Applications</p>}>
+                                                        {
+                                                            checkIfPropertyHasApplications(props.propertyID, props.applications).map(renderAllApplications => (
+                                                                <ManagerApplicationsCard
+                                                                    key={renderAllApplications._id}
+                                                                    managerID={renderAllApplications.managerID}
+                                                                    tenantID={renderAllApplications.tenantID}
+                                                                    propertyID={renderAllApplications.propertyID}
+                                                                    pets={renderAllApplications.pets}
+                                                                    criminalRecord={renderAllApplications.criminalRecord}
+                                                                    creditScore={renderAllApplications.creditScore}
+                                                                    adults={renderAllApplications.adults}
+                                                                    kids={renderAllApplications.kids}
+                                                                    status={renderAllApplications.status}
+                                                                />
+                                                            ))
+                                                        }
+                                                    </Modal>
+                                                    :
+                                                    null
+                                            }
+                                        </div>
+                                        :
+                                        null
+                                }
+                            </Col>
+                        </Row>
 
-                                    <Row>
-                                        <Modal header="Add Property" trigger={<Button>Upload Files</Button>}>
-                                            <input multiple type="file" name="file" onChange={(e) => onChange(e, props)}></input>
-                                        </Modal>
-                                    </Row>
-                                </Modal>
-                            </Row>
 
-                            <Row>
-                                <MediaBox>
-                                    <img src="https://www.ekcreditunion.co.uk/wp-content/uploads/2018/02/Blank-Silhouette-768x768.jpg" width="200" alt="tenant" />
-                                </MediaBox>
-                            </Row>
+                        <Row className="z-depth-1" id="propertyCardBody">
+                            {/*COLUMN FOR PROPERTY INFO*/}
+                            <Col s={8} m={8} l={8} xl={8} className="propertyInfoArea">
+                                <Tabs className="tab-demo z-depth-1" options={{ swipeable: true }}>
+                                    <Tab title="Test 1" className="blue">
+                                        Test 1
+                                    </Tab>
+                                    <Tab title="Test 2" active className="red">
+                                        Test 2
+                                    </Tab>
+                                    <Tab title="Test 3" className="green">
+                                        Test 3
+                                    </Tab>
+                                </Tabs>
+                            </Col>
+                            {/*COLUMN FOR IMAGES*/}
+                            <Col s={3} m={3} l={3} xl={3} id="imagesColumn">
 
-
-                        </Col>
-                    </Row>
-
-                    <Row className="">
-                        { //LOGIC FOR UPDATES MODAL RENDERING
-                            checkIfPropertyHasUpdates(props.propertyID, props.updates).length > 0
-                                ?
-                                <Modal header={props.address} trigger={<Button>Updates</Button>}>
+                                <Row className="vacantChip">
                                     {
-                                        checkIfPropertyHasUpdates(props.propertyID, props.updates).map(renderAllUpdates => (
-                                            <ManagerUpdatesCard
-                                                key={renderAllUpdates.message}
-                                                type={renderAllUpdates.type}
-                                                message={renderAllUpdates.message}
-                                                status={renderAllUpdates.status}
-                                                {...props}
-                                            />
-                                        ))
+                                        props.vacant === true ?
+                                            <Chip>
+                                                Vacant
+                                    </Chip>
+                                            :
+                                            <Chip>
+                                                Not Vacant
+                                    </Chip>
                                     }
-                                </Modal>
-                                :
-                                null
-                        }
+                                </Row>
 
-                        {   //LOGIC FOR APPLICATIONS MODAL RENDERING
-                            checkIfPropertyHasApplications(props.propertyID, props.applications).length > 0
-                                ?
-                                <Modal header={props.address} trigger={<Button>Applications</Button>}>
-                                    {
-                                        checkIfPropertyHasApplications(props.propertyID, props.applications).map(renderAllApplications => (
-                                            <ManagerApplicationsCard
-                                                key={renderAllApplications._id}
-                                                managerID={renderAllApplications.managerID}
-                                                tenantID={renderAllApplications.tenantID}
-                                                propertyID={renderAllApplications.propertyID}
-                                                pets={renderAllApplications.pets}
-                                                criminalRecord={renderAllApplications.criminalRecord}
-                                                creditScore={renderAllApplications.creditScore}
-                                                adults={renderAllApplications.adults}
-                                                kids={renderAllApplications.kids}
-                                                status={renderAllApplications.status}
-                                            />
-                                        ))
-                                    }
-                                </Modal>
-                                :
-                                null
-                        }
-                    </Row>
+                                <Row>
+                                    <MediaBox className="mediaBox" width="200" alt="property" >
+                                        <img src={getImgFromBase64(props.propertyImgs)[0]}></img>
+                                    </MediaBox>
+
+                                    <Modal header="All Photos" trigger={<Button>All Photos</Button>}>
+                                        <Row>
+                                            {
+                                                props.propertyImgs.map(allImages => (
+                                                    <React.Fragment key={allImages.id}>
+                                                        <div className="allPropertyImageDiv">
+                                                            <img className="responsive-img" src={allImages.img64.file} ></img>
+                                                            <Button id={allImages.id} onClick={(e) => removeImage(e, props)}>Remove</Button>
+                                                        </div>
+                                                    </React.Fragment>
+                                                ))
+                                            }
+                                        </Row>
+
+                                        <Row>
+                                            <Modal header="Add Property" trigger={<Button>Upload Files</Button>}>
+                                                <input multiple type="file" name="file" onChange={(e) => onChange(e, props)}></input>
+                                            </Modal>
+                                        </Row>
+                                    </Modal>
+                                </Row>
+
+                                <Row>
+                                    <MediaBox className="mediaBox" >
+                                        <img src="https://www.ekcreditunion.co.uk/wp-content/uploads/2018/02/Blank-Silhouette-768x768.jpg" width="200" alt="tenant" />
+                                    </MediaBox>
+                                </Row>
+                            </Col>
+                        </Row>
+                    </div>
                 </div>
             </div>
         </div>
     )
 }
-
 ManagerPropertyCard = connect(
     null,
     mapDispatchToProps

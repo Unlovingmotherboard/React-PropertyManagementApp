@@ -13,6 +13,28 @@ export const CONNECTING_TO_HERPESTIDAE = "CONNECTING_TO_HERPESTIDAE";
 export const CONFIRMATION_MODAL_DISPLAY ="CONFIRMATION_MODAL_DISPLAY";
 
 
+//PAYMENT FORM EXPORTS 
+
+export const SET_DATE_PICKER = "SET_DATE_PICKER";
+export const SET_PAYMENT = "SET_PAYMENT";
+export const SET_EXPENSES = "SET_EXPENSES";
+
+
+export const setDatePicker = (date) => {
+  return { type: SET_DATE_PICKER, date: date }
+}
+
+export const setPayment = (payment) => {
+  return { type: SET_PAYMENT, payment: payment }
+}
+
+export const setExpenses = (expenses) => {
+  return { type: SET_EXPENSES, expenses: expenses }
+}
+
+
+
+
 export const connectingToHerpestidaeOrNahFam = (yuhOrNah) => {
   return { type: CONNECTING_TO_HERPESTIDAE, yuhOrNah: yuhOrNah }
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router} from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 //COMPONENTS
 import TenantPropertyCard from "./components/TenantComponents/PropertyCard/TenantPropertyCard"
@@ -19,7 +19,7 @@ import { importProperties } from "./redux/actions";
 import { reduxForm } from 'redux-form';
 
 //REACT MATERALIZE
-import {} from "react-materialize";
+import { } from "react-materialize";
 
 const addProperty = (event) => {
   event.preventDefault();
@@ -48,9 +48,9 @@ const mapDispatchToProps = dispatch =>
 
 
 class TenantPage extends Component {
- 
+
   // componentDidMount() {
-     
+
   // }
 
   render() {
@@ -59,48 +59,53 @@ class TenantPage extends Component {
       <div>
         <h1>Yo {this.props.username}</h1>
         <h1>You are a {this.props.type}</h1>
+        <h1>Renting? {this.props.renting === "true" ?
+      "True"
+      :
+          "False"
+      }</h1>
 
         {this.props.renting === "true" ?
 
-        this.props.properties.map(properties => (
-          <TenantPropertyCard 
-            key={properties._id}
-            address={properties.address}
-            city={properties.city}
-            state={properties.state}
-            postalCode={properties.postalCode}
-            updates={this.props.tenantUpdates}
-            rent={properties.rent}
-            renting={this.props.renting}
-            tenant={properties.tenant}
-            vacant={properties.vacant}
-            managerORTenant={this.props.type}
-            managerID={properties.managerID}
-            propertyID={properties._id}
-            propertyImgs={properties.propertyImgs}
-            />))
-      
-        :
-
-        this.props.properties.map(properties => (
-          <TenantPropertyCard 
-            key={properties.address}
-            address={properties.address}
-            city={properties.city}
-            state={properties.state}
-            postalCode={properties.postalCode}
-            renting={this.props.renting}
-            rent={properties.rent}
-            tenant={properties.tenant}
-            vacant={properties.vacant}
-            managerORTenant={this.props.type}
-            managerID={properties.managerID}
-            propertyImgs={properties.propertyImgs}
+          this.props.properties.map(properties => (
+            <TenantPropertyCard
+              key={properties._id}
+              address={properties.address}
+              city={properties.city}
+              state={properties.state}
+              postalCode={properties.postalCode}
+              updates={this.props.tenantUpdates}
+              rent={properties.rent}
+              renting={this.props.renting}
+              tenant={properties.tenant}
+              vacant={properties.vacant}
+              managerORTenant={this.props.type}
+              managerID={properties.managerID}
+              propertyID={properties._id}
+              propertyImgs={properties.propertyImgs}
             />))
 
-      }
+          :
 
-        
+          this.props.properties.map(properties => (
+            <TenantPropertyCard
+              key={properties.address}
+              address={properties.address}
+              city={properties.city}
+              state={properties.state}
+              postalCode={properties.postalCode}
+              renting={this.props.renting}
+              rent={properties.rent}
+              tenant={properties.tenant}
+              vacant={properties.vacant}
+              managerORTenant={this.props.type}
+              managerID={properties.managerID}
+              propertyImgs={properties.propertyImgs}
+            />))
+
+        }
+
+
       </div>
     </Router>
   }

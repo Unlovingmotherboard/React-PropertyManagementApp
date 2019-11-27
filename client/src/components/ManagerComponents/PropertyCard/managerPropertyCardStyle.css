@@ -2,6 +2,9 @@
     margin: 30px;
 }
 
+.propertyCard {
+    margin-bottom: 100px;
+}
 
 .applicationsBadge {
     background-color: rgb(108, 158, 37);
@@ -15,4 +18,27 @@
 
 .propertyInfoArea {
     margin-right: 50px;
+    color: black;
+    margin-top: 15px;
+}
+
+.mediaBox {
+    display: inline-block;
+}
+
+.vacantChip {
+    margin: 20px;
+}
+
+#imagesColumn {
+    border-left: black .5px solid;
+}
+
+#propertyCardHeader {
+    color: black;
+    background-color: rgb(234, 234, 234);
+}
+
+#propertyCardBody {
+    background-color: rgb(234, 234, 234);
 }

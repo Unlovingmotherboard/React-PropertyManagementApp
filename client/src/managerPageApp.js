@@ -22,7 +22,7 @@ import { importProperties, connectingToHerpestidaeOrNahFam, setApplications, set
 import { Field, reduxForm } from 'redux-form';
 
 //REACT MATERALIZE
-import { Modal, Button, Preloader  } from "react-materialize";
+import { Modal, Button, Preloader } from "react-materialize";
 
 
 const addProperty = (props) => {
@@ -57,17 +57,19 @@ const mapDispatchToProps = dispatch =>
 
 class ManagerPage extends Component {
 
-  
+
 
   render() {
     return <Router>
       <div>
         <Row>
-          <div className="container center-align">
-            <h1>Welcome, {this.props.username}.</h1>
-          </div>
+
+        
 
           <div className="container center-align">
+            <h1>Welcome, {this.props.username}</h1>
+
+            <div className="container center-align">
             <Modal header="Add Property" trigger={<Button>Add Property</Button>}>
               <label htmlFor="address">Address</label>
               <Field name="address" component="input" type="text" />
@@ -83,12 +85,21 @@ class ManagerPage extends Component {
             </Modal>
           </div>
 
+            <h1>You have {this.props.applications.length} new application{this.props.applications.length > 1 ?
+            "s"
+            :
+              null
+
+            } and {this.props.updates.length} updates</h1>
+          </div>
+
+          
         </Row>
 
-        <Row> 
-          
+        <Row>
+
           {this.props.properties.map(properties => (
-            
+
             <ManagerPropertyCard
               key={properties.address}
               address={properties.address}
@@ -106,7 +117,7 @@ class ManagerPage extends Component {
               propertyImgs={properties.propertyImgs}
             />))
           }
-        
+
         </Row>
       </div>
     </Router>
