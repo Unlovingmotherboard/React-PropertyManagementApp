@@ -7,6 +7,7 @@ const PropertiesModel = require("../models/Properties");
 const ApplicationModels = require("../models/Applications");
 const tenantModels = require("../models/User")
 const dbUpdatesModel = require("../models/Updates");
+const grossProfitModel = require("../models/grossProfit");
 
 /***************************|
 |*  Methods for controller *|
@@ -130,7 +131,7 @@ const ManagerController = {
     },
 
     logout: function (req, res) {
-        
+
         const token = req.query.token;
 
         UserSessionManagerModel.findOneAndUpdate({
@@ -147,7 +148,7 @@ const ManagerController = {
                     success: false,
                     message: "Error: Server Error!"
                 });
-            } if(checkSession === null) {
+            } if (checkSession === null) {
                 return res.send({
                     success: false,
                     message: "Error: Could not find session!"
@@ -243,7 +244,7 @@ const ManagerController = {
             tenant: body.tenant,
         };
 
-        const {token} = body;
+        const { token } = body;
         console.log(token);
 
         VERIFYUSER(token);
@@ -262,7 +263,7 @@ const ManagerController = {
                     success: false,
                     message: "Error: Server Error!"
                 });
-            } if(checkSession === null) {
+            } if (checkSession === null) {
                 return res.send({
                     success: false,
                     message: "Error: Could not find session!"
@@ -291,10 +292,10 @@ const ManagerController = {
             manager: body.manager,
             managerID: "",
             tenant: body.tenant,
-            
+
         };
 
-        const {token} = body;
+        const { token } = body;
 
         VERIFYUSER(token);
 
@@ -338,7 +339,7 @@ const ManagerController = {
         VERIFYUSER(req.query.token);
 
 
-        
+
         ManagerUserModel.find({
             userName: req.query.username,
             isDeleted: false
@@ -358,24 +359,26 @@ const ManagerController = {
                 })
             }
             else {
-                    PropertiesModel
-                    .find({$and :
-                        [
-                        {managerID: sessions[0]._id }, 
-                        ]}
-                        )
+                PropertiesModel
+                    .find({
+                        $and:
+                            [
+                                { managerID: sessions[0]._id },
+                            ]
+                    }
+                    )
                     .then((dbModel) => res.json(dbModel))
                     .catch(err => console.log(err));
 
             }
         });
 
-        
 
 
-            // (dbModel) => res.json(dbModel)
 
-            // (dbModel) => res.json(dbModel)
+        // (dbModel) => res.json(dbModel)
+
+        // (dbModel) => res.json(dbModel)
         // return res.send({
         //     success: true,
         //     message: "AYYYYY"
@@ -406,11 +409,11 @@ const ManagerController = {
 
                 const managerid = sessions[0]._id;
                 ApplicationModels
-                    .find({managerID: managerid})
+                    .find({ managerID: managerid })
                     .then((dbModel) => res.json(dbModel))
                     .catch(err => console.log(err));
             }
-        }); 
+        });
     },
 
     getUpdatesFromDatabase: function (req, res) {
@@ -439,11 +442,11 @@ const ManagerController = {
                 const managerIdFromDB = getManagerId[0]._id;
                 console.log(managerIdFromDB);
                 dbUpdatesModel
-                    .find({managerID: managerIdFromDB})
+                    .find({ managerID: managerIdFromDB })
                     .then((dbModel) => res.json(dbModel))
                     .catch(err => console.log(err));
             }
-        }); 
+        });
 
     },
 
@@ -464,13 +467,13 @@ const ManagerController = {
         const tenantIDs = req.body.tenantID;
         const propertyIDs = req.body.propertyID;
         console.log(propertyIDs + tenantIDs)
-        
+
 
         PropertiesModel.findOneAndUpdate({
             _id: propertyIDs,
         }, {
-                tenant: tenantIDs,
-                vacant: false
+            tenant: tenantIDs,
+            vacant: false
         }, null, (err, res1) => {
             if (err) {
                 console.log(err)
@@ -478,35 +481,35 @@ const ManagerController = {
                     success: false,
                     message: "Error: Server Error!"
                 });
-            } 
-            if(res1) {
+            }
+            if (res1) {
                 tenantModels.findOneAndUpdate({
                     _id: tenantIDs,
                 }, {
                     renting: true
                 }, null, (err, res2) => {
-                    if(err) {
+                    if (err) {
                         return res.send({
                             success: false,
                             message: "Error: Server Error!"
                         });
                     }
-                    if(res2) {
-                        ApplicationModels.deleteMany({tenantID: tenantIDs}).then(res => res.json(res)).catch(err => res.json(err));
+                    if (res2) {
+                        ApplicationModels.deleteMany({ tenantID: tenantIDs }).then(res => res.json(res)).catch(err => res.json(err));
                     }
                 });
-            } 
+            }
         });
     },
 
     changeStatusOfUpdates: function (req, res) {
 
-        const {message, propertyID, type, acceptDenySeen} = req.body;
+        const { message, propertyID, type, acceptDenySeen } = req.body;
 
-        if(acceptDenySeen === "Accept" || acceptDenySeen === "Deny" || acceptDenySeen === "Aknowledged") {
+        if (acceptDenySeen === "Accept" || acceptDenySeen === "Deny" || acceptDenySeen === "Aknowledged") {
 
 
-            dbUpdatesModel.findOneAndUpdate({propertyID: propertyID, message: message, type: type}, {
+            dbUpdatesModel.findOneAndUpdate({ propertyID: propertyID, message: message, type: type }, {
 
                 status: acceptDenySeen
 
@@ -516,9 +519,9 @@ const ManagerController = {
                         success: false,
                         message: "Error: Server Error!"
                     });
-                } 
+                }
 
-                if(reschangeStatusOfUpdates) {
+                if (reschangeStatusOfUpdates) {
                     return res.send({
                         success: true,
                         message: "Update was accepted!"
@@ -529,38 +532,38 @@ const ManagerController = {
             return res.send("Not a proper response");
         }
 
-            
+
     },
 
     uploadPropertyImages: function (req, res) {
 
         function makeid(length) {
-            var result           = '';
-            var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var result = '';
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             var charactersLength = characters.length;
-            for ( var i = 0; i < length; i++ ) {
-               result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            for (var i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
             }
             return result;
-         }
+        }
 
-         let {body} = req;
+        let { body } = req;
 
-         let imgData = {};
+        let imgData = {};
 
-         imgData.img64 = body.imgDta;
+        imgData.img64 = body.imgDta;
 
-         imgData.id = makeid(3);
+        imgData.id = makeid(3);
 
-        PropertiesModel.findByIdAndUpdate({_id:body.propertyID},{$push: {propertyImgs: imgData}}, (err, fileUploadRes) => {
+        PropertiesModel.findByIdAndUpdate({ _id: body.propertyID }, { $push: { propertyImgs: imgData } }, (err, fileUploadRes) => {
             if (err) {
                 return res.send({
                     success: false,
                     message: "Error: Server Error!"
                 });
-            } 
+            }
 
-            if(fileUploadRes) {
+            if (fileUploadRes) {
                 return res.send({
                     success: true,
                     message: "It worked wooo!!"
@@ -570,7 +573,7 @@ const ManagerController = {
     },
 
     removeImg: function (req, res) {
-        let {body} = req;
+        let { body } = req;
 
         const propertyID = body.propertyID;
         const imgID = body.imgID;
@@ -578,7 +581,74 @@ const ManagerController = {
         PropertiesModel.update(
             { _id: propertyID },
             { $pull: { 'propertyImgs': { id: imgID } } }
-          ).then(successfulres => res.send(successfulres)).catch(err => res.send(err));
+        ).then(successfulres => res.send(successfulres)).catch(err => res.send(err));
+    },
+
+    managerProfitTest: function (req, res) {
+
+        const { body } = req;
+
+        PropertiesModel.findOne({ _id: body.propertyID }, (err, res) => {
+            if (err) {
+                return res.send({
+                    success: false,
+                    message: "Error: Server Error!"
+                });
+            }
+
+            if (res) {
+                const managerID = res.managerID;
+                grossProfitModel.create({
+                    payment: body.payment,
+                    expenses: body.expenses,
+                    timestamp: body.timestamp,
+                    tenantID: body.tenant,
+                    propertyID: body.propertyID,
+                    managerID: managerID
+                }).then(res => console.log(res)).catch(err => console.log(err))
+            }
+        })
+
+
+
+        return res.send("Good!")
+    },
+
+    getProfitHistory: function (req, res) {
+
+        const { query } = req;
+
+        ManagerUserModel.findOne({ userName: query.username }, (err, resFromUserModel) => {
+            if (err) {
+                return res.send({
+                    success: false,
+                    message: "Error: Server Error!"
+                });
+            }
+
+            else {
+                const managerID = resFromUserModel._id;
+
+                grossProfitModel.find({ managerID: managerID }).then((grossProfitModelRes) => {
+
+                    let paymentHistoryArray = []
+
+                    for (let i = 0; i < grossProfitModelRes.length; i++) {
+                        let infoObj = {};
+
+                        infoObj.expenses = grossProfitModelRes[i].expenses;
+                        infoObj.payment = grossProfitModelRes[i].payment;
+                        infoObj.timestamp = grossProfitModelRes[i].timestamp;
+                        infoObj.propertyID = grossProfitModelRes[i].propertyID;
+
+                        paymentHistoryArray.push(infoObj);
+                    }
+
+                    res.json(paymentHistoryArray)
+
+                }).catch(err => console.log(err))
+            }
+        })
     }
 };
 

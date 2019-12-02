@@ -42,6 +42,14 @@ const ManagerHerpestinaeController = require("../../controllers/ManagerControlle
 
   router.route("/removeImg")
   .post(ManagerHerpestinaeController.removeImg)
+
+  router.route("/managerProfitTest")
+  .post(ManagerHerpestinaeController.managerProfitTest)
+
+  router.route("/getProfitHistory")
+  .get(ManagerHerpestinaeController.getProfitHistory)
+
+  
   
 
 /***********|

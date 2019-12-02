@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { reducer as formReducer } from 'redux-form';
-import { FROM_ACTION_LOGIN, FROM_NAVBAR_LOGOUT, IMPORT_PROPERTIES, SET_APPLICATIONS_FROM_DB, SET_UPDATES_FROM_DB, GET_UPDATES_FROM_DB, CONNECTING_TO_HERPESTIDAE, CONFIRMATION_MODAL_DISPLAY, SET_DATE_PICKER, SET_PAYMENT, SET_EXPENSES } from './actions';
+import { FROM_ACTION_LOGIN, FROM_NAVBAR_LOGOUT, IMPORT_PROPERTIES, SET_APPLICATIONS_FROM_DB, SET_UPDATES_FROM_DB, GET_UPDATES_FROM_DB, CONNECTING_TO_HERPESTIDAE, CONFIRMATION_MODAL_DISPLAY, SET_DATE_PICKER, SET_PAYMENT, SET_EXPENSES, GET_PAYMENT_HISTORY_FROM_DB } from './actions';
 
 const initialState = {
   token: null,
@@ -9,6 +9,7 @@ const initialState = {
   applications: [],
   updates: [],
   tenantUpdates: [],
+  paymentHistory: [],
   renting: null,
   connectingToHerpestidae: false,
   displayConfirmModal: false
@@ -24,24 +25,24 @@ const paymentFormReducer = function (paymentFormstate = paymentForm, action) {
   switch (action.type) {
     case SET_DATE_PICKER:
 
-    return {
-      ...paymentFormstate,
-      date: action.date
-    }
+      return {
+        ...paymentFormstate,
+        date: action.date
+      }
 
     case SET_PAYMENT:
 
-    return {
-      ...paymentFormstate,
-      payment: action.payment
-    }
+      return {
+        ...paymentFormstate,
+        payment: action.payment
+      }
 
     case SET_EXPENSES:
 
-    return {
-      ...paymentFormstate,
-      expenses: action.expenses
-    }
+      return {
+        ...paymentFormstate,
+        expenses: action.expenses
+      }
 
     default:
       return paymentFormstate;
@@ -64,13 +65,23 @@ const loggedReducer = function (state = initialState, action) {
     case FROM_NAVBAR_LOGOUT:
       return {
         ...state,
-        token: "",
-        managerORtenant: "",
+        token: null,
+        managerORtenant: null,
         properties: [],
         applications: [],
         updates: [],
         tenantUpdates: [],
-        renting: null
+        paymentHistory: [],
+        renting: null,
+        connectingToHerpestidae: false,
+        displayConfirmModal: false,
+        username: null,
+      }
+
+    case GET_PAYMENT_HISTORY_FROM_DB:
+      return {
+        ...state,
+        paymentHistory: action.paymenyHistory
       }
 
     case CONFIRMATION_MODAL_DISPLAY:

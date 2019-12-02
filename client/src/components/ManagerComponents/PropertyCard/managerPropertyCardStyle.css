@@ -31,14 +31,28 @@
 }
 
 #imagesColumn {
-    border-left: black .5px solid;
+    border-left: white 20px solid;
 }
 
 #propertyCardHeader {
     color: black;
-    background-color: rgb(234, 234, 234);
+    background-color: rgb(242, 242, 244);
 }
 
 #propertyCardBody {
-    background-color: rgb(234, 234, 234);
+    background-color: rgb(242, 242, 244);
+}
+
+
+.chartContainer {
+    max-width: 100%;
+    background-color: rgb(242, 242, 244);
+}
+
+.cardAddressTitle {
+    max-width: 50%;
+}
+
+.roundedEdge {
+    border-radius: 20px;
 }

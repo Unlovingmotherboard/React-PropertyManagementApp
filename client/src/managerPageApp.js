@@ -4,7 +4,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { Row } from "react-materialize";
 
 //COMPONENTS
-
 import ManagerPropertyCard from "./components/ManagerComponents/PropertyCard/ManagerPropertyCard"
 
 //API TO Herpestinae
@@ -23,6 +22,12 @@ import { Field, reduxForm } from 'redux-form';
 
 //REACT MATERALIZE
 import { Modal, Button, Preloader } from "react-materialize";
+
+// LoadingOverlay
+import LoadingOverlay from 'react-loading-overlay';
+
+//IMPORT CSS
+import "./Styles/managerPageApp.css"
 
 
 const addProperty = (props) => {
@@ -56,50 +61,42 @@ const mapDispatchToProps = dispatch =>
 
 
 class ManagerPage extends Component {
-
-
-
   render() {
     return <Router>
-      <div>
+      <div className="container z-depth-1" id="mainContentContainer">
         <Row>
-
-        
-
           <div className="container center-align">
             <h1>Welcome, {this.props.username}</h1>
-
             <div className="container center-align">
-            <Modal header="Add Property" trigger={<Button>Add Property</Button>}>
-              <label htmlFor="address">Address</label>
-              <Field name="address" component="input" type="text" />
-              <label htmlFor="city">City</label>
-              <Field name="city" component="input" type="text" />
-              <label htmlFor="state">State</label>
-              <Field name="state" component="input" type="text" />
-              <label htmlFor="zipcode">zipcode</label>
-              <Field name="zipcode" component="input" type="text" />
-              <label htmlFor="rent">Rent</label>
-              <Field name="rent" component="input" type="number" />
-              <Button onClick={() => addProperty(this.props)}>Add Property</Button>
-            </Modal>
-          </div>
-
+              <Modal header="Add Property" trigger={<Button>Add Property</Button>}>
+                <label htmlFor="address">Address</label>
+                <Field name="address" component="input" type="text" />
+                <label htmlFor="city">City</label>
+                <Field name="city" component="input" type="text" />
+                <label htmlFor="state">State</label>
+                <Field name="state" component="input" type="text" />
+                <label htmlFor="zipcode">zipcode</label>
+                <Field name="zipcode" component="input" type="text" />
+                <label htmlFor="rent">Rent</label>
+                <Field name="rent" component="input" type="number" />
+                <Button onClick={() => addProperty(this.props)}>Add Property</Button>
+              </Modal>
+            </div>
             <h1>You have {this.props.applications.length} new application{this.props.applications.length > 1 ?
-            "s"
-            :
+              "s"
+              :
               null
-
             } and {this.props.updates.length} updates</h1>
           </div>
-
-          
         </Row>
 
-        <Row>
-
+        <LoadingOverlay
+          active={store.getState().loggedReducer.connectingToHerpestidae === true}
+          spinner
+          text='Loading your content...'
+        >
+          <Row>
           {this.props.properties.map(properties => (
-
             <ManagerPropertyCard
               key={properties.address}
               address={properties.address}
@@ -115,17 +112,15 @@ class ManagerPage extends Component {
               applications={this.props.applications}
               propertyID={properties._id}
               propertyImgs={properties.propertyImgs}
+              paymentHistory={this.props.paymentHistory}
             />))
           }
-
         </Row>
+        </LoadingOverlay>
       </div>
     </Router>
   }
 };
-
-
-
 ManagerPage = connect(
   mapStateToProps,
   mapDispatchToProps

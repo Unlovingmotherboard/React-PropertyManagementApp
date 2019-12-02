@@ -1,16 +1,27 @@
 import React from "react";
 import { Row, Col, Card, Button, Chip } from "react-materialize"
 import { withRouter } from 'react-router-dom';
-import { connect } from "react-redux";
 
 
 // //API
 import API from "../../../utils/API";
 
-// import { bindActionCreators } from "redux";
-// import { connect } from "react-redux";
-// import { logout } from "../../redux/actions";
-// import store from '../../redux/store';
+//REDUX IMPORTS 
+import { connectingToHerpestidaeOrNahFam } from "../../../redux/actions";
+
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { getDate } from "date-fns";
+
+const mapDispatchToProps = dispatch =>
+    bindActionCreators(
+        {
+            connectingToHerpestidaeOrNahFam,
+        },
+        dispatch
+    );
+
+
 
 function acceptFYI(props) {
     console.log("Accepting FYI!");
@@ -24,7 +35,7 @@ function acceptFYI(props) {
 
     console.log(sendDataForUpdates)
 
-    
+    props.connectingToHerpestidaeOrNahFam(true);
     API.changeStatusOfUpdates(sendDataForUpdates).then(res => console.log(res)).catch(err => console.log(err))
 }
 
@@ -40,7 +51,7 @@ function denyRequest(props) {
 
     console.log(sendDataForUpdates)
 
-
+    props.connectingToHerpestidaeOrNahFam(true);
     API.changeStatusOfUpdates(sendDataForUpdates).then(res => console.log(res)).catch(err => console.log(err))
 
 }
@@ -57,8 +68,16 @@ function acceptRequest(props) {
 
     console.log(sendDataForUpdates)
 
+    props.connectingToHerpestidaeOrNahFam(true);
     API.changeStatusOfUpdates(sendDataForUpdates).then(res => console.log(res)).catch(err => console.log(err))
 
+}
+
+//MOMENT 
+const moment = require('moment');
+
+const setTimeStamp = (timestamp) => {
+    return moment(timestamp).format("YYYY-MM-DD HH:mm:ss")
 }
 
 
@@ -68,20 +87,26 @@ function ManagerUpdatesCard(props) {
             <Row>
                 <Col m={6} s={12} l={12} xl={12}>
                     <Card>
-                        <h5>{props.type}</h5>
+                        <div>
+                            <h5>{props.type}</h5>
+                        </div>
+                        <div>
+                        <p>{setTimeStamp(props.timestamp)}:</p>
                         <p>{props.message}</p>
+                        </div>
+                        
                         {
                             props.status !== "Pending" ?
-                            <Chip>
-                            {props.status}
-                            </Chip>
-                            :
-                            props.type === "FYI" 
-                            ?
-                            <Button waves="light" modal="close" onClick={() => acceptFYI(props)}>Got It!</Button>
-                            :
-                            <React.Fragment><Button waves="red" modal="close" onClick={() => denyRequest(props)}>Denny</Button>
-                            <Button waves="light" modal="close" onClick={() => acceptRequest(props)}>Accept</Button></React.Fragment>
+                                <Chip>
+                                    {props.status}
+                                </Chip>
+                                :
+                                props.type === "FYI"
+                                    ?
+                                    <Button waves="light" modal="close" onClick={() => acceptFYI(props)}>Got It!</Button>
+                                    :
+                                    <React.Fragment><Button waves="red" modal="close" onClick={() => denyRequest(props)}>Denny</Button>
+                                        <Button waves="light" modal="close" onClick={() => acceptRequest(props)}>Accept</Button></React.Fragment>
                         }
                     </Card>
                 </Col>
@@ -90,7 +115,10 @@ function ManagerUpdatesCard(props) {
     )
 }
 
-
+ManagerUpdatesCard = connect(
+    null,
+    mapDispatchToProps
+)(ManagerUpdatesCard);
 
 
 export default withRouter(connect()(ManagerUpdatesCard));

@@ -48,6 +48,15 @@ export default {
   managerDeleteImages: function(imgID) {
     return axios.post("/api/manager/removeImg", imgID);
   },
+
+  managerProfitTest: function(profitData) {
+    return axios.post("/api/manager/managerProfitTest", profitData);
+  },
+
+  getProfitHistory: function(data) {
+    return axios.get(`/api/manager/getProfitHistory?token=${data.token}&username=${data.username}`);
+  },
+
 //-----//-----MANAGER ROUTES-----//-----//
 
 

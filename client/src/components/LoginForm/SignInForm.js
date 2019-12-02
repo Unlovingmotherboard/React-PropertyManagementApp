@@ -10,7 +10,7 @@ import API from "../../utils/API";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import { fromReducerLogin, importProperties, setUpdates, getUpdates } from "../../redux/actions";
+import { fromReducerLogin, importProperties, setUpdates, getUpdates, getPaymenyHistory } from "../../redux/actions";
 
 const mapDispatchToProps = dispatch =>
     bindActionCreators(
@@ -18,7 +18,8 @@ const mapDispatchToProps = dispatch =>
             fromReducerLogin,
             importProperties,
             setUpdates,
-            getUpdates
+            getUpdates,
+            getPaymenyHistory
         },
         dispatch
     );
@@ -61,9 +62,6 @@ let signInForm = props => {
         
     }
 
-
-
-
     const managerSignInSumbit = (event) => {
         event.preventDefault();
         const toHerpestidae = store.getState().form.signInFormFromState.values;
@@ -88,23 +86,14 @@ let signInForm = props => {
         }
         API.findAllProperties(data).then(res => { props.importProperties(res.data)} ).catch(err => console.log(err));  
 
+        API.getProfitHistory(data).then(res => props.getPaymenyHistory(res.data)).catch(err => console.log(err))
+
         API.getUpdatesFromDatabase(data).then(res => {
             props.setUpdates(res.data);
             props.history.push("/Manager");
         }).catch(err => console.log(err));  
-
-         
-                //  {props.importProperties(res.data)}
     }
 
-
-    // if (props[0].type === "Manager") {
-    //     props[0].history.push("/Manager");
-    // }
-
-    // if (props[0].type === "Tenant") {
-    //     props[0].history.push("/Tenant");
-    // }
     return (
 
         <div className="container">

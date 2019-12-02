@@ -9,6 +9,7 @@ export const SET_FIRSTNAME_FORM = "SET_FIRSTNAME_FORM";
 export const SET_APPLICATIONS_FROM_DB = "SET_APPLICATIONS_FROM_DB";
 export const SET_UPDATES_FROM_DB = "SET_UPDATES_FROM_DB";
 export const GET_UPDATES_FROM_DB = "GET_UPDATES_FROM_DB";
+export const GET_PAYMENT_HISTORY_FROM_DB = "GET_PAYMENT_HISTORY_FROM_DB";
 export const CONNECTING_TO_HERPESTIDAE = "CONNECTING_TO_HERPESTIDAE";
 export const CONFIRMATION_MODAL_DISPLAY ="CONFIRMATION_MODAL_DISPLAY";
 
@@ -62,6 +63,10 @@ export const setUpdates = (managerUpdates) => {
 
 export const getUpdates = (tenantUpdates) => {
   return {type: GET_UPDATES_FROM_DB, tenantUpdates};
+} 
+
+export const getPaymenyHistory = (paymenyHistory) => {
+  return {type: GET_PAYMENT_HISTORY_FROM_DB, paymenyHistory};
 } 
 
 export const importProperties = (propertiesFromHerpestinae) => {

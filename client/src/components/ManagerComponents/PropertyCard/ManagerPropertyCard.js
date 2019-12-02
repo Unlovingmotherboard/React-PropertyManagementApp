@@ -20,12 +20,15 @@ import "./managerPropertyCardStyle.css"
 //API
 import API from "../../../utils/API";
 
+//IMPORT VICTORY (DATA CHARTS)
+import { VictoryPie } from 'victory';
 
 //REDUX IMPORTS 
 import { showConfirmationModal, connectingToHerpestidaeOrNahFam, setDatePicker, setPayment, setExpenses } from "../../../redux/actions";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import { getDate } from "date-fns";
 
 const mapDispatchToProps = dispatch =>
     bindActionCreators(
@@ -41,13 +44,47 @@ const mapDispatchToProps = dispatch =>
 
 
 
-const confirmRemoveIMG = (props) => {
-    props.showConfirmationModal(true)
-    console.log("You sure?")
+
+//FUNCTIONS FOR "ADD PAYMENT" FORM
+const setDateRedux = (date, props) => {
+    props.setDatePicker(date);
+}
+
+const setPaymentRedux = (e, props) => {
+    props.setPayment(e.target.value);
+}
+
+const setExpensesRedux = (e, props) => {
+    props.setExpenses(e.target.value);
+}
+
+//API CALL FUNCTIONS
+const sendToDB = (props) => {
+    let profitData = {};
+
+    profitData.payment = store.getState().paymentFormReducer.payment;
+    profitData.expenses = store.getState().paymentFormReducer.expenses;
+    profitData.timestamp = store.getState().paymentFormReducer.date;
+    profitData.tenant = props.tenant;
+    profitData.propertyID = props.propertyID;
+    profitData.timestamp = store.getState().paymentFormReducer.date;
+
+    console.log("Updating payment history")
+    props.connectingToHerpestidaeOrNahFam(true)
+    API.managerProfitTest(profitData).then(res => console.log(res)).catch(err => console.log(err))
 }
 
 
+function seenUpdates(updates) {
 
+    const updateToSeen = getAllNonPendingUpdates(updates);
+    console.log(updateToSeen)
+    if (updateToSeen >= 0) {
+        return console.log("Nothing to update");
+    }
+
+    API.setUpdatesToSeen(updateToSeen).then(res => console.log(res)).catch(err => console.log(err))
+}
 
 const removeImage = (e, props) => {
 
@@ -72,9 +109,11 @@ const onChange = (e, props) => {
         imgDataToHerpestidae.propertyID = props.propertyID;
         props.connectingToHerpestidaeOrNahFam(true)
         API.uploadPropertyImages(imgDataToHerpestidae).then(res => console.log(res)).catch(err => console.log(err));
-
     }
 }
+
+
+
 
 
 
@@ -121,18 +160,6 @@ function getAllNonPendingUpdates(updatesArray) {
     return newArray;
 }
 
-function seenUpdates(updates) {
-
-    const updateToSeen = getAllNonPendingUpdates(updates);
-    console.log(updateToSeen)
-    if (updateToSeen >= 0) {
-        return console.log("Nothing to update");
-    }
-
-    API.setUpdatesToSeen(updateToSeen).then(res => console.log(res)).catch(err => console.log(err))
-}
-
-
 
 const getImgFromBase64 = (propertyImgs) => {
 
@@ -174,52 +201,74 @@ function checkIfPropertyHasUpdates(propertyID, updatesArray) {
 }
 
 
+//SORT PAYMENT HISTORY PER PROPERTY
+const sortPaymentHistory = (propertyID, paymentHistoryArray) => {
+    let sortedPaymenyHistory = [];
 
-
-
-const setDateRedux = (date, props) => {
-    props.setDatePicker(date);
+    for (let i = 0; i < paymentHistoryArray.length; i++) {
+        if (paymentHistoryArray[i].propertyID === propertyID) {
+            sortedPaymenyHistory.push(paymentHistoryArray[i]);
+        }
+    }
+    return sortedPaymenyHistory;
 }
 
-const setPaymentRedux = (e, props) => {
-     props.setPayment(e.target.value);
+//GET DATA FOR VICTORY CHART
+const getExpenses = (propertyID, paymentHistoryArray) => {
+    let sumOfExpenses = 0;
+
+    for (let i = 0; i < paymentHistoryArray.length; i++) {
+        if (paymentHistoryArray[i].propertyID === propertyID) {
+            sumOfExpenses = sumOfExpenses + parseInt(paymentHistoryArray[i].expenses.reduce((a, b) => a + b, 0));
+        }
+    }
+    return sumOfExpenses;
 }
 
-const setExpensesRedux = (e, props) => {
-     props.setExpenses(e.target.value);
+const getAllPayments = (propertyID, paymentHistoryArray) => {
+    let sumOfPayments = 0;
+    console.log("Going into property: " + propertyID)
+
+    for (let i = 0; i < paymentHistoryArray.length; i++) {
+        if (paymentHistoryArray[i].propertyID === propertyID) {
+            sumOfPayments = sumOfPayments + parseInt(paymentHistoryArray[i].payment);
+        }
+    }
+    console.log("Payments:" + sumOfPayments);
+    return sumOfPayments;
 }
 
-const sendToDB = (props) => {
-    console.log(store.getState().paymentFormReducer.payment)
-    console.log(store.getState().paymentFormReducer.expenses)
-    console.log(store.getState().paymentFormReducer.date)
-    console.log(props.tenant)
-    console.log(props.propertyID)
+//SUM OF EXPENSES 
+const sumExpenses = (expensesArray) => {
+    let parsedExpensesArray = [];
+    for (var i = 0; i < expensesArray.length; i++) {
+        let parseNumber = parseInt(expensesArray[i]);
+        parsedExpensesArray.push(parseNumber);
+    }
+    return parsedExpensesArray.reduce((a, b) => a + b, 0);
+}
+
+
+
+
+
+
+
+//MOMENT 
+const moment = require('moment');
+
+const getTabDate = (timestamp) => {
+    return moment(timestamp).format("MM/DD/YYYY")
 }
 
 function ManagerPropertyCard(props) {
     return (
         <div className="propertyCard">
-            <div className="container">
-                <div className="card">
+            <div>
+                <div className="card roundedEdge">
                     <div className="card-content white-text center-align">
-                        <Row className="z-depth-1" id="propertyCardHeader">
-                            <Col s={12} m={12} l={12} xl={12}>
-
-
-                                <Modal header={props.address} trigger={<p>Add Payment</p>}>
-                                    <DatePicker onChange={(e) => setDateRedux(e, props)}/>
-                                    <TextInput onChange={(e) => setExpensesRedux(e, props)} label="Expenses" />
-                                    <TextInput onChange={(e) => setPaymentRedux(e, props)} label="Payment" />
-                                    <Button onClick={() => sendToDB(props)}></Button>
-                                </Modal>
-                                {/*setDatePicker,
-            setPayment,
-            setExpenses*/}
-
-
-
-
+                        <Row className="roundedEdge cardAddressTitle" id="propertyCardHeader">
+                            <Col s={12} m={12} l={12} xl={12} className="roundedEdge">
                                 <span className="card-title">{props.address}, {props.city}, {props.state} {props.postalCode} </span>
                                 {
                                     getAllPendingUpdates(props.propertyID, props.updates) > 0
@@ -236,6 +285,7 @@ function ManagerPropertyCard(props) {
                                                                     type={renderAllUpdates.type}
                                                                     message={renderAllUpdates.message}
                                                                     status={renderAllUpdates.status}
+                                                                    timestamp={renderAllUpdates.timestamp}
                                                                     {...props}
                                                                 />
                                                             ))
@@ -286,23 +336,35 @@ function ManagerPropertyCard(props) {
                         </Row>
 
 
-                        <Row className="z-depth-1" id="propertyCardBody">
+                        <Row className="roundedEdge" id="propertyCardBody">
                             {/*COLUMN FOR PROPERTY INFO*/}
-                            <Col s={8} m={8} l={8} xl={8} className="propertyInfoArea">
-                                <Tabs className="tab-demo z-depth-1" options={{ swipeable: true }}>
-                                    <Tab title="Test 1" className="blue">
-                                        Test 1
-                                    </Tab>
-                                    <Tab title="Test 2" active className="red">
-                                        Test 2
-                                    </Tab>
-                                    <Tab title="Test 3" className="green">
-                                        Test 3
-                                    </Tab>
-                                </Tabs>
+                            <Col s={12} m={12} l={8} xl={8} className="propertyInfoArea" >
+                                <div>
+                                    <Tabs options={{ swipeable: true }}>
+
+                                        {
+                                            sortPaymentHistory(props.propertyID, props.paymentHistory).length > 0 ?
+
+                                                sortPaymentHistory(props.propertyID, props.paymentHistory).map(mapPaymentHistory => (
+
+                                                    <Tab title={getTabDate(mapPaymentHistory.timestamp)}>
+                                                        <h3>Payment: ${mapPaymentHistory.payment}</h3>
+                                                        <h3>Expenses: ${sumExpenses(mapPaymentHistory.expenses)}</h3>
+                                                        <h3>Net Income: ${mapPaymentHistory.payment - sumExpenses(mapPaymentHistory.expenses)}</h3>
+                                                    </Tab>
+
+                                                ))
+                                                :
+                                                <Tab title="No Payment History Yet">
+                                                    
+                                                </Tab>
+                                        }
+                                    </Tabs>
+                                </div>
+
                             </Col>
                             {/*COLUMN FOR IMAGES*/}
-                            <Col s={3} m={3} l={3} xl={3} id="imagesColumn">
+                            <Col s={12} m={12} l={3} xl={3} id="imagesColumn">
 
                                 <Row className="vacantChip">
                                     {
@@ -349,8 +411,41 @@ function ManagerPropertyCard(props) {
                                         <img src="https://www.ekcreditunion.co.uk/wp-content/uploads/2018/02/Blank-Silhouette-768x768.jpg" width="200" alt="tenant" />
                                     </MediaBox>
                                 </Row>
+
+                                <Modal header={props.address} trigger={<p>Add Payment</p>}>
+                                    <DatePicker onChange={(e) => setDateRedux(e, props)} />
+                                    <TextInput onChange={(e) => setExpensesRedux(e, props)} label="Expenses" />
+                                    <TextInput onChange={(e) => setPaymentRedux(e, props)} label="Payment" />
+                                    <Button onClick={() => sendToDB(props)}></Button>
+                                </Modal>
                             </Col>
                         </Row>
+                        <div className="chartContainer">
+
+                            {
+                                sortPaymentHistory(props.propertyID, props.paymentHistory).length > 0 ?
+
+                                    <VictoryPie
+                                    height={400}
+                                        data={[
+                                            { x: `Expenses: $${getExpenses(props.propertyID, props.paymentHistory)}`, y: getExpenses(props.propertyID, props.paymentHistory) },
+                                            { x: `Payments: $${getAllPayments(props.propertyID, props.paymentHistory)}`, y: getAllPayments(props.propertyID, props.paymentHistory) },
+                                        ]}
+
+                                        style={{
+                                            labels: {
+                                            fill: "#FFFFFF", stroke: "#000000", strokeWidth: 0.5
+                                            }
+                                          }}
+
+                                        innerRadius={50} labelRadius={75} colorScale={["gold", "navy",]} animate={{
+                                            duration: 2000
+                                          }}
+                                    />
+                                    :
+                                    null
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
