@@ -654,7 +654,7 @@ const ManagerController = {
                 });
             }
 
-            else {
+            if (resFromUserModel.length > 0) {
                 const managerID = resFromUserModel._id;
 
                 grossProfitModel.find({ managerID: managerID }).then((grossProfitModelRes) => {
