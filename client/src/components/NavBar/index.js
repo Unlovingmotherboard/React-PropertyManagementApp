@@ -48,24 +48,28 @@ function NavBar(props) {
                                 {
                                     <React.Fragment>
                                         <Link to="/Manager">Manager Page</Link>
-                                        <Button onClick={logoutManager}>Logout</Button>
-                                     </React.Fragment>
+                                        <Link to="/" onClick={logoutManager}>Logout</Link>
+                                        {/* <Button >Logout</Button> */}
+                                    </React.Fragment>
 
 
                                 }
                             </Dropdown>
                             :
 
-                            <Dropdown trigger={<a>Sign Up</a>}>
-                                {
+                            <React.Fragment>
+                                <Dropdown trigger={<a>Navigate</a>}>
+
                                     <React.Fragment>
-                                        <Link to="/SignUp">Tenant Sign Up</Link>
-                                        <Link to="/Manager/SignUp">Manager Sign Up</Link>
                                         <Link to="/Login">Tenant Login</Link>
                                         <Link to="/Manager/Login">Manager Login</Link>
+                                        <Link to="/SignUp">Tenant Sign Up</Link>
+                                        <Link to="/Manager/SignUp">Manager Sign Up</Link>
                                     </React.Fragment>
-                                }
-                            </Dropdown>
+
+                                </Dropdown>  
+                            </React.Fragment>
+
                 }
             </Navbar>
         </div>

@@ -10,7 +10,7 @@ import API from "../../utils/API";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
-import { fromReducerLogin, importProperties, setUpdates, getUpdates, getPaymenyHistory } from "../../redux/actions";
+import { fromReducerLogin, importProperties, setUpdates, getUpdates, getPaymenyHistory, setApplications } from "../../redux/actions";
 
 const mapDispatchToProps = dispatch =>
     bindActionCreators(
@@ -19,6 +19,7 @@ const mapDispatchToProps = dispatch =>
             importProperties,
             setUpdates,
             getUpdates,
+            setApplications,
             getPaymenyHistory
         },
         dispatch
@@ -87,6 +88,8 @@ let signInForm = props => {
         API.findAllProperties(data).then(res => { props.importProperties(res.data)} ).catch(err => console.log(err));  
 
         API.getProfitHistory(data).then(res => props.getPaymenyHistory(res.data)).catch(err => console.log(err))
+
+        API.getApplicationsFromDatabase(data).then(res => props.setApplications(res.data)).catch(err => console.log(err));
 
         API.getUpdatesFromDatabase(data).then(res => {
             props.setUpdates(res.data);
