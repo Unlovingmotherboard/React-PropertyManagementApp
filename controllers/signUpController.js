@@ -287,7 +287,7 @@ const CollectionNameController = {
             managerID: req.body.managerID
         }
 
-        VERIFYUSER(token);
+        // VERIFYUSER(token);
 
         dbConnectToUserModel.find({userName: userName}, (err, resFromUserModel) => {
             if (err) {
@@ -344,7 +344,7 @@ const CollectionNameController = {
         
         const {token, username} = req.query;
 
-        VERIFYUSER(token);
+        // VERIFYUSER(token);
 
         //FIND TENANT ID WITH USERNAME
 
