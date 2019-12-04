@@ -108,7 +108,7 @@ const onChange = (e, props) => {
         imgDataToHerpestidae.imgDta = { file: e.target.result }
         imgDataToHerpestidae.propertyID = props.propertyID;
         
-        API.uploadPropertyImages(imgDataToHerpestidae).then(props.connectingToHerpestidaeOrNahFam(true)).catch(err => console.log(err));
+        API.uploadPropertyImages(imgDataToHerpestidae).then(() =>{props.connectingToHerpestidaeOrNahFam(true)}).catch(err => console.log(err));
     }
 }
 

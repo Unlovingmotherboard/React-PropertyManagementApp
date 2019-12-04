@@ -398,14 +398,14 @@ const ManagerController = {
         ManagerUserModel.find({
             userName: req.query.username,
             isDeleted: false
-        }, (err, sessions) => {
+        }, (err, applications) => {
             if (err) {
                 return res.send({
                     success: false,
                     message: "Error: Server Error?"
                 });
             }
-            if (sessions.length != 1) {
+            if (applications.length != 1) {
                 return res.send({
                     success: false,
                     message: "Error: invalid"
@@ -413,7 +413,7 @@ const ManagerController = {
             }
             else {
 
-                const managerid = sessions[0]._id;
+                const managerid = applications[0]._id;
                 ApplicationModels
                     .find({ managerID: managerid })
                     .then((dbModel) => res.json(dbModel))
