@@ -6,17 +6,35 @@ import {Row, Col, Card, Button } from "react-materialize"
 //API
 import API from "../../../utils/API";
 
+//REDUX IMPORTS 
+import { connectingToHerpestidaeOrNahFam } from "../../../redux/actions";
+
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+
+const mapDispatchToProps = dispatch =>
+    bindActionCreators(
+        {
+            connectingToHerpestidaeOrNahFam,
+        },
+        dispatch
+    );
 
 const acceptApplication = (props) => {
-console.log("Setting property to Tenant");
 //SET TENANT ID TO PROPERTY...SET VACANT TO FALSE...THEN DELETE ALL THE APPLICATIONS.
 console.log(props);
-API.assignTenantAndDeleteApplications(props).then(res => console.log(res)).catch(err => console.log(err));
+API.assignTenantAndDeleteApplications(props).then(props.connectingToHerpestidaeOrNahFam(true)).catch(err => console.log(err));
 
 }
 
-const denyApplication = () => {
+const denyApplication = (props) => {
 console.log("Deleting application");
+
+console.log(props);
+
+API.denyApplications(props).then(props.connectingToHerpestidaeOrNahFam(true)).catch(err => console.log(err))
+
+
 
 //DELETE JUST THE ONE APPLICATION
 }
@@ -41,5 +59,10 @@ function ManagerApplicationsCard(props) {
 
     )
 }
+
+ManagerApplicationsCard = connect(
+    null,
+    mapDispatchToProps
+)(ManagerApplicationsCard);
 
 export default ManagerApplicationsCard;

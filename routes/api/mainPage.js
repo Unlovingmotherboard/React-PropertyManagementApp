@@ -49,7 +49,8 @@ const ManagerHerpestinaeController = require("../../controllers/ManagerControlle
   router.route("/getProfitHistory")
   .get(ManagerHerpestinaeController.getProfitHistory)
 
-  
+  router.route("/denyApplications")
+  .post(ManagerHerpestinaeController.denyApplications)
   
 
 /***********|

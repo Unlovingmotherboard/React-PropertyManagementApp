@@ -41,6 +41,10 @@ export default {
     return axios.post("/api/manager/assignTenantAndDeleteApplications", assignTenantAndDeleteApplicationsData);
   },
 
+  denyApplications: function(denyApplications) {
+    return axios.post("/api/manager/denyApplications", denyApplications);
+  },
+
   uploadPropertyImages: function(imgFiles) {
     return axios.post("/api/manager/uploadPropertyImages", imgFiles);
   },

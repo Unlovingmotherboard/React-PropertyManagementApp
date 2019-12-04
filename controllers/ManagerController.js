@@ -502,6 +502,29 @@ const ManagerController = {
         });
     },
 
+    denyApplications: function (req, res) {
+        const {propertyID, tenantID} = req.body;
+
+        ApplicationModels.deleteOne({
+            propertyID: propertyID,
+            tenantID: tenantID
+        }, (deleteRes, err) => {
+            if (err) {
+                console.log(err)
+                return res.send({
+                    success: false,
+                    message: "Error: Server Error!"
+                });
+            }
+
+            if(deleteRes.length > 0) {
+                return res.send("Deleted Application!")
+            }
+
+
+        })
+    },
+
     changeStatusOfUpdates: function (req, res) {
 
         const { message, propertyID, type, acceptDenySeen } = req.body;
