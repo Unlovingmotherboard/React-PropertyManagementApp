@@ -226,7 +226,7 @@ const CollectionNameController = {
                 });
             }
 
-            if (DBres) {
+            if (DBres.length > 0) {
                 const tenantID = DBres[0]._id;
                 console.log(tenantID)
 
