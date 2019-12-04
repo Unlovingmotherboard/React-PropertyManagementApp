@@ -79,11 +79,11 @@ const CollectionNameController = {
             return res.send('Invalid Credentials').status(404);
         }
 
-        dbConnectToUserModel.find({ email: email }, (err, previousUsers) => {
+        dbConnectToUserModel.find({ $or: [ { email: email }, { userName: userName } ] }, (err, previousUsers) => {
             if (err) {
                 return res.send('Server Error').status(404);
             } else if (previousUsers.length > 0) {
-                return res.send('Error: Account Already Be').status(404);
+                return res.status(404).send({Error: 'Account Already Be'});
             } else {
                 const newUSer = new dbConnectToUserModel();
 

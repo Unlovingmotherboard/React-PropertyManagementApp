@@ -80,11 +80,12 @@ const ManagerController = {
             return res.send('Invalid Credentials').status(404);
         }
 
-        ManagerUserModel.find({ email: email, userName: userName }, (err, previousUsers) => {
+        ManagerUserModel.find({ $or: [ { email: email }, { userName: userName } ] }, (err, previousUsers) => {
+            console.log(previousUsers);
             if (err) {
                 return res.send('Server Error').status(404);
             } else if (previousUsers.length > 0) {
-                return res.send('Error: Account Already Be').status(404);
+                return res.status(404).send('Error: Account Already Be');
             } else {
                 const newUSer = new ManagerUserModel();
 
