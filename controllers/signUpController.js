@@ -212,7 +212,7 @@ const CollectionNameController = {
 
         //VERIFY THE TOKEN IS VALID
 
-        VERIFYUSER(token);
+        // VERIFYUSER(token);
 
 
 
