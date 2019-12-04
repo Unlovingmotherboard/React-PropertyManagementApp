@@ -654,6 +654,13 @@ const ManagerController = {
                 });
             }
 
+            if (resFromUserModel === undefined) {
+                return res.send({
+                    success: false,
+                    message: "Could find profit history"
+                })
+            }
+
             if (resFromUserModel.length > 0) {
                 const managerID = resFromUserModel._id;
 
