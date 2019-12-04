@@ -549,7 +549,7 @@ const ManagerController = {
                     });
                 }
 
-                if (reschangeStatusOfUpdates) {
+                if (reschangeStatusOfUpdates.length > 0) {
                     return res.send({
                         success: true,
                         message: "Update was accepted!"
