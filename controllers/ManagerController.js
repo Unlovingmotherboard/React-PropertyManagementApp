@@ -251,9 +251,8 @@ const ManagerController = {
         };
 
         const { token } = body;
-        console.log(token);
 
-        VERIFYUSER(token);
+        // VERIFYUSER(token);
 
         ManagerUserModel.findOneAndUpdate({
             userName: sendToUser.manager,
@@ -303,7 +302,7 @@ const ManagerController = {
 
         const { token } = body;
 
-        VERIFYUSER(token);
+        // VERIFYUSER(token);
 
         // console.log(sendPropertyToDB.manager);
 
@@ -342,7 +341,7 @@ const ManagerController = {
         console.log(req.query.username);
         //VERIFY TOKEN
 
-        VERIFYUSER(req.query.token);
+        // VERIFYUSER(req.query.token);
 
 
 
@@ -393,7 +392,7 @@ const ManagerController = {
 
     getApplicationsFromDatabase: function (req, res) {
 
-        VERIFYUSER(req.query.token);
+        // VERIFYUSER(req.query.token);
 
         ManagerUserModel.find({
             userName: req.query.username,
@@ -425,7 +424,7 @@ const ManagerController = {
     getUpdatesFromDatabase: function (req, res) {
         console.log("GETTING UPDATES")
 
-        VERIFYUSER(req.query.token);
+        // VERIFYUSER(req.query.token);
 
         ManagerUserModel.find({
             userName: req.query.username,
