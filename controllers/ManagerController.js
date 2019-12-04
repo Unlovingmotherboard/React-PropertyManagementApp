@@ -80,7 +80,7 @@ const ManagerController = {
             return res.send('Invalid Credentials').status(404);
         }
 
-        ManagerUserModel.find({ email: email }, (err, previousUsers) => {
+        ManagerUserModel.find({ email: email, userName: userName }, (err, previousUsers) => {
             if (err) {
                 return res.send('Server Error').status(404);
             } else if (previousUsers.length > 0) {
