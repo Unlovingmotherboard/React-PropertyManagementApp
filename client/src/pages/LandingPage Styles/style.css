@@ -1,3 +1,7 @@
 .darken {
     filter: brightness(50%);
   }
+
+.min_height {
+    min-height: 900px;
+}

@@ -40,7 +40,10 @@ function NavBar(props) {
                     props.type === "Tenant" ?
                         <Dropdown trigger={<a>Tentnat</a>}>
                             {
-                                <Button onClick={logoutTenant}>Logout</Button>
+                                <React.Fragment>
+                                <Link to="/Tenant">Tenant Page</Link>
+                                <Link to="/" onClick={logoutTenant}>Logout</Link>
+                                </React.Fragment>
                             }
                         </Dropdown> :
                         props.type === 'Manager' ?

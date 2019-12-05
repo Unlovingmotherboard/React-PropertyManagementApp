@@ -63,7 +63,7 @@ const mapDispatchToProps = dispatch =>
 class ManagerPage extends Component {
   render() {
     return <Router>
-      <div className="container z-depth-1" id="mainContentContainer">
+      <div className="container z-depth-1 min_height" id="mainContentContainer">
         <Row>
           <div className="container center-align">
             <h1>Welcome, {this.props.username}</h1>

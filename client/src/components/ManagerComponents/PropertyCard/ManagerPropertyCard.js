@@ -532,7 +532,7 @@ function ManagerPropertyCard(props) {
                                     <DatePicker onChange={(e) => setDateRedux(e, props)} />
                                     <TextInput onChange={(e) => setExpensesRedux(e, props)} label="Expenses" />
                                     <TextInput onChange={(e) => setPaymentRedux(e, props)} label="Payment" />
-                                    <Button onClick={() => sendToDB(props)}></Button>
+                                    <Button onClick={() => sendToDB(props)}>Send Payment</Button>
                                 </Modal>
                             </Col>
                         </Row>

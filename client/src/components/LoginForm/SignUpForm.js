@@ -5,6 +5,7 @@ import { Button } from "react-materialize"
 import { Field, reduxForm } from 'redux-form';
 import store from '../../redux/store';
 import API from "../../utils/API"
+import "../../pages/LandingPage Styles/style.css"
 
 let signUpForm = props => {
 
@@ -29,7 +30,7 @@ let signUpForm = props => {
     API.managerSignUp(toHerpestidae).then(() => {props.history.push("/Manager/Login")}).catch(err => console.log(err));
   }
 
-  return (<div className="container">
+  return (<div className="container min_height">
     <form>
 
       <label htmlFor="firstName">First Name</label>
@@ -41,11 +42,11 @@ let signUpForm = props => {
       <label htmlFor="Email">Email</label>
       <Field name="email" component="input" type="email" />
 
-      <label htmlFor="Password">Password</label>
-      <Field name="password" component="input" type="password" />
-
       <label htmlFor="UserName">Username</label>
       <Field name="userName" component="input" type="text" />
+
+      <label htmlFor="Password">Password</label>
+      <Field name="password" component="input" type="password" />
 
       {
         props[0].manager

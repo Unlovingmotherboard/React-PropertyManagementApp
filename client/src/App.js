@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 
+import {Footer} from "react-materialize"
+
+
 //Components
 import NavBar from "./components/NavBar/index"
 
@@ -70,7 +73,7 @@ class App extends Component {
         token: localStorage.getItem("token"),
         username: localStorage.getItem("username")
       }
-      API.findAllProperties(data).then((res) => { this.props.importProperties(res.data)}).catch(err => console.log(err));
+      API.findAllProperties(data).then((res) => { this.props.importProperties(res.data) }).catch(err => console.log(err));
 
       //GET ALL APPLICATIONS
       API.getApplicationsFromDatabase(data).then(res => this.props.setApplications(res.data)).catch(err => console.log(err));
@@ -96,9 +99,9 @@ class App extends Component {
       //DO THIS ROUTE INSTEAD tenantFindAllPropertiesToRent
 
       API.tenantFindAllPropertiesToRent(data).then((res) => this.props.importProperties(res.data)).catch(err => console.log(err));
-      
+
       API.findAllUpdates(data).then(res => this.props.getUpdates(res.data)).catch(err => console.log(err));
-       }
+    }
 
 
   }
@@ -144,25 +147,38 @@ class App extends Component {
             <Route exact path="/Manager/Login" render={(props) => <ManagerSignInPage {...props} manager={true} token={this.props.storeToProps.loggedReducer.token} type={this.props.storeToProps.loggedReducer.managerORtenant} />}>></Route>
 
             {/*--------------------ROUTES USED FOR MANAGER--------------------*/}
-            <PrivateRoute exact path="/Manager" 
-            updates={this.props.storeToProps.loggedReducer.updates} 
-            properties={this.props.storeToProps.loggedReducer.properties} 
-            token={this.props.storeToProps.loggedReducer.token} 
-            type={this.props.storeToProps.loggedReducer.managerORtenant} 
-            username={this.props.storeToProps.loggedReducer.username} 
-            applications={this.props.storeToProps.loggedReducer.applications} 
-            connectingToHerpestidaeOrNahFam={this.props.storeToProps.loggedReducer.connectingToHerpestidae} 
-            paymentHistory={this.props.storeToProps.loggedReducer.paymentHistory}
-            component={ManagerPage} />
+            <PrivateRoute exact path="/Manager"
+              updates={this.props.storeToProps.loggedReducer.updates}
+              properties={this.props.storeToProps.loggedReducer.properties}
+              token={this.props.storeToProps.loggedReducer.token}
+              type={this.props.storeToProps.loggedReducer.managerORtenant}
+              username={this.props.storeToProps.loggedReducer.username}
+              applications={this.props.storeToProps.loggedReducer.applications}
+              connectingToHerpestidaeOrNahFam={this.props.storeToProps.loggedReducer.connectingToHerpestidae}
+              paymentHistory={this.props.storeToProps.loggedReducer.paymentHistory}
+              component={ManagerPage} />
 
             {/*--------------------ROUTES USED FOR TENANT--------------------*/}
-            <PrivateRoute exact path="/Tenant" 
-            tenantUpdates={this.props.storeToProps.loggedReducer.tenantUpdates} 
-            properties={this.props.storeToProps.loggedReducer.properties} 
-            token={this.props.storeToProps.loggedReducer.token} 
-            type={this.props.storeToProps.loggedReducer.managerORtenant} 
-            username={this.props.storeToProps.loggedReducer.username} renting={this.props.storeToProps.loggedReducer.renting} component={TenantPage} />
+            <PrivateRoute exact path="/Tenant"
+              tenantUpdates={this.props.storeToProps.loggedReducer.tenantUpdates}
+              properties={this.props.storeToProps.loggedReducer.properties}
+              token={this.props.storeToProps.loggedReducer.token}
+              type={this.props.storeToProps.loggedReducer.managerORtenant}
+              username={this.props.storeToProps.loggedReducer.username} renting={this.props.storeToProps.loggedReducer.renting} component={TenantPage} />
           </Switch>
+
+
+          <Footer
+            className="example"
+            copyrights="© 2019 Copyright Quality Homes LLC">
+            <h5 className="white-text">
+              Footer Content
+              </h5>
+            <p className="grey-text text-lighten-4">
+              You can use rows and columns here to organize your footer content.
+                </p>
+          </Footer>
+
         </div>
       </Router>
     )

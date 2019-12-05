@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "react-materialize";
 import { withRouter } from 'react-router-dom';
 
+import "../../pages/LandingPage Styles/style.css"
 
 import { Field, reduxForm } from 'redux-form';
 import store from '../../redux/store';
@@ -99,11 +100,8 @@ let signInForm = props => {
 
     return (
 
-        <div className="container">
+        <div className="container min_height">
             <form>
-
-                <label htmlFor="Password">Password</label>
-                <Field name="password" component="input" type="password" />
 
                 {
                     props[0].manager
@@ -111,12 +109,26 @@ let signInForm = props => {
                         <React.Fragment>
                             <label htmlFor="UserName">Username</label>
                             <Field name="userName" component="input" type="text" />
-                            <Button onClick={managerSignInSumbit}>Login</Button>
                         </React.Fragment>
                         :
                         <React.Fragment>
                             <label htmlFor="Email">Email</label>
                             <Field name="email" component="input" type="email" />
+                        </React.Fragment>
+                }
+
+                <label htmlFor="Password">Password</label>
+                <Field name="password" component="input" type="password" />
+
+
+                {
+                    props[0].manager
+                        ?
+                        <React.Fragment>
+                            <Button onClick={managerSignInSumbit}>Login</Button>
+                        </React.Fragment>
+                        :
+                        <React.Fragment>
                             <Button onClick={tenantSignInSumbit}>Login</Button>
                         </React.Fragment>
                 }
