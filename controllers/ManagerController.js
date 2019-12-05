@@ -181,8 +181,6 @@ const ManagerController = {
             return res.send('Invalid Credentials').status(404);
         }
 
-        // email = email.toLowerCase();
-
         ManagerUserModel.find({ userName: userName }, (err, usersE) => {
             
             if(err) {
@@ -236,8 +234,6 @@ const ManagerController = {
 
     addProperty: function (req, res) {
         const { body } = req;
-
-
 
         const sendToUser = {
             address: body.address,
@@ -303,12 +299,6 @@ const ManagerController = {
 
         const { token } = body;
 
-        // VERIFYUSER(token);
-
-        // console.log(sendPropertyToDB.manager);
-
-        //WITH USERNAME LOOK AT MANAGER WITH THAT USERNAME AND GET THEIR _ID
-
         ManagerUserModel.find({
             userName: sendPropertyToDB.manager,
             isDeleted: false
@@ -335,17 +325,6 @@ const ManagerController = {
     },
 
     findAllProperties: function (req, res) {
-
-        //GET OUR TOKEN
-        console.log(req.query.token);
-        //GET OUR USERNAME
-        console.log(req.query.username);
-        //VERIFY TOKEN
-
-        // VERIFYUSER(req.query.token);
-
-
-
         ManagerUserModel.find({
             userName: req.query.username,
             isDeleted: false
@@ -375,20 +354,8 @@ const ManagerController = {
                     )
                     .then((dbModel) => res.json(dbModel))
                     .catch(err => console.log(err));
-
             }
         });
-
-
-
-
-        // (dbModel) => res.json(dbModel)
-
-        // (dbModel) => res.json(dbModel)
-        // return res.send({
-        //     success: true,
-        //     message: "AYYYYY"
-        // })
     },
 
     getApplicationsFromDatabase: function (req, res) {
@@ -645,9 +612,12 @@ const ManagerController = {
 
     getProfitHistory: function (req, res) {
 
+        console.log("GETTING PAYMENT HISTORY ````````````````````")
         const { query } = req;
 
         ManagerUserModel.findOne({ userName: query.username }, (err, resFromUserModel) => {
+
+            console.log(resFromUserModel);
             if (err) {
                 return res.send({
                     success: false,
@@ -658,13 +628,11 @@ const ManagerController = {
             if (resFromUserModel === null) {
                 return res.send({
                     success: false,
-                    message: "Could find profit history"
+                    message: "Could not find profit history"
                 })
             }
 
-
-
-            if (resFromUserModel.length > 0) {
+            if (resFromUserModel !== null) {
                 const managerID = resFromUserModel._id;
 
                 grossProfitModel.find({ managerID: managerID }).then((grossProfitModelRes) => {

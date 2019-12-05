@@ -1,6 +1,7 @@
 import React from "react";
 import { Row, Col, Modal, Button, Badge, RadioGroup, MediaBox, Carousel, Chip, Tabs, Tab, DatePicker, TextInput } from "react-materialize"
 
+
 //REDUX FORMS
 import { Field, reduxForm } from 'redux-form';
 
@@ -97,7 +98,7 @@ const removeImage = (e, props) => {
     API.managerDeleteImages(removeImgObj).then(res => console.log(res)).catch(err => console.log(err));
 }
 
-const onChange = (e, props) => {
+const uploadPropertyPhoto = (e, props) => {
     let files = e.target.files;
     let imgDataToHerpestidae = {};
 
@@ -107,8 +108,8 @@ const onChange = (e, props) => {
     reader.onload = (e) => {
         imgDataToHerpestidae.imgDta = { file: e.target.result }
         imgDataToHerpestidae.propertyID = props.propertyID;
-        
-        API.uploadPropertyImages(imgDataToHerpestidae).then(() =>{props.connectingToHerpestidaeOrNahFam(true)}).catch(err => console.log(err));
+
+        API.uploadPropertyImages(imgDataToHerpestidae).then(() => { props.connectingToHerpestidaeOrNahFam(true) }).catch(err => console.log(err));
     }
 }
 
@@ -172,6 +173,21 @@ const getImgFromBase64 = (propertyImgs) => {
 
     else {
         return ["http://eliteconnectre.com/wp-content/themes/eliteconnectrealestate/images/propertyPlaceholder.png"]
+    }
+
+}
+
+const getTenantImgFromBase64 = (propertyImgs) => {
+
+    let imagesArray = []
+
+    if (propertyImgs.length > 0) {
+        imagesArray.push(propertyImgs[0].img64.file);
+        return imagesArray;
+    }
+
+    else {
+        return ["https://thumbs.dreamstime.com/b/default-placeholder-profile-icon-avatar-gray-woman-90197997.jpg"]
     }
 
 }
@@ -261,15 +277,11 @@ const getTabDate = (timestamp) => {
     return moment(timestamp).format("MM/DD/YYYY")
 }
 
-function ManagerPropertyCard(props) {
-    return (
-        <div className="propertyCard">
-            <div>
-                <div className="card roundedEdge">
-                    <div className="card-content white-text center-align">
-                        <Row className="roundedEdge cardAddressTitle" id="propertyCardHeader">
-                            <Col s={12} m={12} l={12} xl={12} className="roundedEdge">
-                                <span className="card-title">{props.address}, {props.city}, {props.state} {props.postalCode} </span>
+/*
+<Col s={12} m={12} l={12} xl={12} className="roundedEdge">
+                                <img src="https://img.icons8.com/flat_round/64/000000/home--v1.png"></img> <span className="card-title">{props.address}, {props.city}, {props.state} {props.postalCode} </span>
+
+
                                 {
                                     getAllPendingUpdates(props.propertyID, props.updates) > 0
                                         ?
@@ -333,12 +345,106 @@ function ManagerPropertyCard(props) {
                                         null
                                 }
                             </Col>
+
+
+*/
+
+
+function ManagerPropertyCard(props) {
+    return (
+        <div className="propertyCard">
+            <div>
+                <div className="card roundedEdge">
+                    <div className="card-content white-text center-align">
+
+
+                        <Row className="roundedEdge cardAddressTitle" id="propertyCardHeader">
+
+
+                            {/* ADDRESS AND ICON */}
+                            <Row>
+                                <Col s={12} m={3} l={3} xl={2}>
+                                <img src="https://img.icons8.com/flat_round/64/000000/home--v1.png"></img> 
+                                </Col>
+
+                                <Col s={12} m={9} l={9} xl={10}>
+                                <span className="card-title center-align">{props.address}, {props.city}, {props.state} {props.postalCode} </span>
+                                </Col>
+                            </Row>
+
+                            {/* Updates */}
+                            <Row>
+                                <Col s={12} m={12} l={12} xl={12}>
+                                {
+                                    getAllPendingUpdates(props.propertyID, props.updates) > 0
+                                        ?
+                                        <div className="center-align">
+                                            { //LOGIC FOR UPDATES MODAL RENDERING
+                                                checkIfPropertyHasUpdates(props.propertyID, props.updates).length > 0
+                                                    ?
+                                                    <Modal header={props.address} trigger={<p className="applicationsBadge">{getAllPendingUpdates(props.propertyID, props.updates)} New Updates</p>}>
+                                                        {
+                                                            checkIfPropertyHasUpdates(props.propertyID, props.updates).map(renderAllUpdates => (
+                                                                <ManagerUpdatesCard
+                                                                    key={renderAllUpdates.message}
+                                                                    type={renderAllUpdates.type}
+                                                                    message={renderAllUpdates.message}
+                                                                    status={renderAllUpdates.status}
+                                                                    timestamp={renderAllUpdates.timestamp}
+                                                                    {...props}
+                                                                />
+                                                            ))
+                                                        }
+                                                    </Modal>
+                                                    :
+                                                    null
+                                            }
+                                        </div>
+                                        :
+                                        null
+                                }
+
+                                {
+                                    checkIfPropertyHasApplications(props.propertyID, props.applications).length > 0
+                                        ?
+                                        <div className="center-align">
+
+                                            {   //LOGIC FOR APPLICATIONS MODAL RENDERING
+                                                checkIfPropertyHasApplications(props.propertyID, props.applications).length > 0
+                                                    ?
+                                                    <Modal header={props.address} trigger={<p className="applicationsBadge">{checkIfPropertyHasApplications(props.propertyID, props.applications).length} New Applications</p>}>
+                                                        {
+                                                            checkIfPropertyHasApplications(props.propertyID, props.applications).map(renderAllApplications => (
+                                                                <ManagerApplicationsCard
+                                                                    key={renderAllApplications._id}
+                                                                    managerID={renderAllApplications.managerID}
+                                                                    tenantID={renderAllApplications.tenantID}
+                                                                    propertyID={renderAllApplications.propertyID}
+                                                                    pets={renderAllApplications.pets}
+                                                                    criminalRecord={renderAllApplications.criminalRecord}
+                                                                    creditScore={renderAllApplications.creditScore}
+                                                                    adults={renderAllApplications.adults}
+                                                                    kids={renderAllApplications.kids}
+                                                                    status={renderAllApplications.status}
+                                                                />
+                                                            ))
+                                                        }
+                                                    </Modal>
+                                                    :
+                                                    null
+                                            }
+                                        </div>
+                                        :
+                                        null
+                                }
+                                </Col>
+                            </Row>
                         </Row>
 
 
                         <Row className="roundedEdge" id="propertyCardBody">
                             {/*COLUMN FOR PROPERTY INFO*/}
-                            <Col s={12} m={12} l={8} xl={8} className="propertyInfoArea" >
+                            <Col s={12} m={12} l={8} xl={8} className="propertyInfoArea">
                                 <div>
                                     <Tabs options={{ swipeable: true }}>
 
@@ -347,7 +453,17 @@ function ManagerPropertyCard(props) {
 
                                                 sortPaymentHistory(props.propertyID, props.paymentHistory).map(mapPaymentHistory => (
 
-                                                    <Tab title={getTabDate(mapPaymentHistory.timestamp)}>
+                                                    <Tab className={
+                                                        
+                                                        mapPaymentHistory.payment - sumExpenses(mapPaymentHistory.expenses) >= 0
+                                                        
+                                                        ?
+                                                        "green"
+                                                        :
+
+                                                        "red"
+                                                    
+                                                    } title={getTabDate(mapPaymentHistory.timestamp)}>
                                                         <h3>Payment: ${mapPaymentHistory.payment}</h3>
                                                         <h3>Expenses: ${sumExpenses(mapPaymentHistory.expenses)}</h3>
                                                         <h3>Net Income: ${mapPaymentHistory.payment - sumExpenses(mapPaymentHistory.expenses)}</h3>
@@ -356,7 +472,7 @@ function ManagerPropertyCard(props) {
                                                 ))
                                                 :
                                                 <Tab title="No Payment History Yet">
-                                                    
+
                                                 </Tab>
                                         }
                                     </Tabs>
@@ -400,7 +516,7 @@ function ManagerPropertyCard(props) {
 
                                         <Row>
                                             <Modal header="Add Property" trigger={<Button>Upload Files</Button>}>
-                                                <input multiple type="file" name="file" onChange={(e) => onChange(e, props)}></input>
+                                                <input multiple type="file" name="file" onChange={(e) => uploadPropertyPhoto(e, props)}></input>
                                             </Modal>
                                         </Row>
                                     </Modal>
@@ -408,7 +524,7 @@ function ManagerPropertyCard(props) {
 
                                 <Row>
                                     <MediaBox className="mediaBox" >
-                                        <img src="https://www.ekcreditunion.co.uk/wp-content/uploads/2018/02/Blank-Silhouette-768x768.jpg" width="200" alt="tenant" />
+                                        <img src={getTenantImgFromBase64(props.tenantImgs)[0]} width="200" alt="tenant" />
                                     </MediaBox>
                                 </Row>
 
@@ -420,13 +536,18 @@ function ManagerPropertyCard(props) {
                                 </Modal>
                             </Col>
                         </Row>
+
+
+
+
+
                         <div className="chartContainer">
 
                             {
                                 sortPaymentHistory(props.propertyID, props.paymentHistory).length > 0 ?
 
                                     <VictoryPie
-                                    height={400}
+                                        height={400}
                                         data={[
                                             { x: `Expenses: $${getExpenses(props.propertyID, props.paymentHistory)}`, y: getExpenses(props.propertyID, props.paymentHistory) },
                                             { x: `Payments: $${getAllPayments(props.propertyID, props.paymentHistory)}`, y: getAllPayments(props.propertyID, props.paymentHistory) },
@@ -434,13 +555,13 @@ function ManagerPropertyCard(props) {
 
                                         style={{
                                             labels: {
-                                            fill: "#FFFFFF", stroke: "#000000", strokeWidth: 0.5
+                                                fill: "#FFFFFF", stroke: "#000000", strokeWidth: 0.5
                                             }
-                                          }}
+                                        }}
 
                                         innerRadius={50} labelRadius={75} colorScale={["gold", "navy",]} animate={{
                                             duration: 2000
-                                          }}
+                                        }}
                                     />
                                     :
                                     null

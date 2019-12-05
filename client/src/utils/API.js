@@ -100,6 +100,10 @@ export default {
 
   setUpdatesToSeen: function(setUpdatesToSeenData) {
     return axios.post('/api/tenant/setUpdatesToSeen', setUpdatesToSeenData)
+  },
+
+  uploadProfileImages: function(uploadProfileImagesData) {
+    return axios.post('/api/tenant/uploadProfileImages', uploadProfileImagesData)
   }
 //--//---//---//--TENANT ROUTES--//---//---//--//
 

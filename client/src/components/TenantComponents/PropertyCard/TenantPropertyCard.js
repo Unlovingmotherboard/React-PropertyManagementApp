@@ -100,6 +100,26 @@ const getImgFromBase64 = (propertyImgs) => {
 }
 
 
+const uploadProfilePhoto = (e, props) => {
+
+    let files = e.target.files;
+    let imgDataToHerpestidae = {};
+
+    let reader = new FileReader();
+    reader.readAsDataURL(files[0]);
+
+    reader.onload = (e) => {
+        imgDataToHerpestidae.imgDta = { file: e.target.result }
+        imgDataToHerpestidae.propertyID = props.propertyID;
+        
+        API.uploadProfileImages(imgDataToHerpestidae).then(res => console.log(res)).catch(err => console.log(err));
+    }
+}
+
+//() =>{props.connectingToHerpestidaeOrNahFam(true)}
+
+
+
 
 function TenantPropertyCard(props) {
     return (
@@ -117,7 +137,7 @@ function TenantPropertyCard(props) {
 
 
                     <Row>
-                        <Col s={10} m={10} l={10} xl={10}>
+                        <Col s={12} m={12} l={8} xl={8}>
                             Rent: ${props.rent}/Month
                         </Col>
 
@@ -131,8 +151,8 @@ function TenantPropertyCard(props) {
                             {
                                 props.renting === "true" ?
                                 <Row>
-                                <MediaBox>
-                                    <img src="https://www.ekcreditunion.co.uk/wp-content/uploads/2018/02/Blank-Silhouette-768x768.jpg" width="200" alt="tenant" />
+                                <MediaBox width="200">
+                                <img src={getImgFromBase64(props.tenantImgs)[0]}></img>
                                 </MediaBox>
                                 </Row>
                                 :
@@ -140,10 +160,10 @@ function TenantPropertyCard(props) {
                             }
                             
 
-                            {/* <Modal header="" trigger={<Button>Upload Files</Button>}>
+                            <Modal header="" trigger={<Button>Update Picture</Button>}>
 
-                                <input multiple type="file" name="file" onChange={(e) => onChange(e, props)}></input>
-                            </Modal> */}
+                            <input multiple type="file" name="file" onChange={(e) => uploadProfilePhoto(e, props)}></input>
+                            </Modal>
                         </Col>
                     </Row>
 

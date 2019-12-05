@@ -19,7 +19,7 @@ import { importProperties } from "./redux/actions";
 import { reduxForm } from 'redux-form';
 
 //REACT MATERALIZE
-import { } from "react-materialize";
+import { Row } from "react-materialize";
 
 const addProperty = (event) => {
   event.preventDefault();
@@ -54,8 +54,76 @@ class TenantPage extends Component {
   // }
 
   render() {
-    console.log(this.props)
     return <Router>
+      <div className="z-depth-1">
+        <Row>
+          <div className="center-align">
+            <h1>Welcome, {this.props.username}</h1>
+          </div>
+        </Row>
+
+        <Row>
+          {this.props.renting === "true" ?
+
+            this.props.properties.map(properties => (
+              <TenantPropertyCard
+                key={properties._id}
+                address={properties.address}
+                city={properties.city}
+                state={properties.state}
+                postalCode={properties.postalCode}
+                updates={this.props.tenantUpdates}
+                rent={properties.rent}
+                renting={this.props.renting}
+                tenant={properties.tenant}
+                vacant={properties.vacant}
+                managerORTenant={this.props.type}
+                managerID={properties.managerID}
+                propertyID={properties._id}
+                propertyImgs={properties.propertyImgs}
+                tenantImgs={properties.tenantImgs}
+              />))
+
+            :
+
+            this.props.properties.map(properties => (
+              <TenantPropertyCard
+                key={properties.address}
+                address={properties.address}
+                city={properties.city}
+                state={properties.state}
+                postalCode={properties.postalCode}
+                renting={this.props.renting}
+                rent={properties.rent}
+                tenant={properties.tenant}
+                vacant={properties.vacant}
+                managerORTenant={this.props.type}
+                managerID={properties.managerID}
+                propertyImgs={properties.propertyImgs}
+              />))
+
+          }
+        </Row>
+      </div>
+    </Router>
+  }
+};
+
+TenantPage = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TenantPage);
+
+export default reduxForm({
+  form: 'addProperty' // a unique identifier for this form
+})(TenantPage);
+
+
+
+
+/*
+
+
       <div>
         <h1>Yo {this.props.username}</h1>
         <h1>You are a {this.props.type}</h1>
@@ -83,6 +151,7 @@ class TenantPage extends Component {
               managerID={properties.managerID}
               propertyID={properties._id}
               propertyImgs={properties.propertyImgs}
+              tenantImgs={properties.tenantImgs}
             />))
 
           :
@@ -106,16 +175,4 @@ class TenantPage extends Component {
         }
 
 
-      </div>
-    </Router>
-  }
-};
-
-TenantPage = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TenantPage);
-
-export default reduxForm({
-  form: 'addProperty' // a unique identifier for this form
-})(TenantPage);
+*/

@@ -38,6 +38,8 @@ const TenantHerpestinaeController = require("../../controllers/signUpController"
   router.route("/setUpdatesToSeen")
   .post(TenantHerpestinaeController.setUpdatesToSeen)
 
+  router.route("/uploadProfileImages")
+  .post(TenantHerpestinaeController.uploadProfileImages)
 
 //   router.route("/:id")
 //   .get(ManagerHerpestinaeController.findAllProperties)

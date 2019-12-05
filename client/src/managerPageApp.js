@@ -112,6 +112,7 @@ class ManagerPage extends Component {
               applications={this.props.applications}
               propertyID={properties._id}
               propertyImgs={properties.propertyImgs}
+              tenantImgs={properties.tenantImgs}
               paymentHistory={this.props.paymentHistory}
             />))
           }
