@@ -63,7 +63,6 @@ class App extends Component {
   componentDidMount() {
     this.props.fromReducerLogin(localStorage.getItem("token"), localStorage.getItem("type"), localStorage.getItem("username"), localStorage.getItem("renting"));
 
-
     //-----------------FOR MANAGERS-----------------//
     if (this.props.storeToProps.loggedReducer.properties.length <= 0 && localStorage.getItem("token") && localStorage.getItem("type") === "Manager") {
       console.log(`Getting properties for ${localStorage.getItem("username")}`)
@@ -81,7 +80,6 @@ class App extends Component {
 
       API.getProfitHistory(data).then(res => this.props.getPaymenyHistory(res.data)).catch(err => console.log(err))
     }
-
 
     //-----------------FOR TENANTS-----------------//
     if (this.props.storeToProps.loggedReducer.properties.length <= 0 && localStorage.getItem("token") && localStorage.getItem("type") === "Tenant") {
@@ -105,7 +103,6 @@ class App extends Component {
 
   }
 
-
   componentDidUpdate() {
     if (this.props.storeToProps.loggedReducer.connectingToHerpestidae === true) {
       const data = {
@@ -128,7 +125,6 @@ class App extends Component {
   }
 
 
-
   render() {
     return (
       <Router>
@@ -146,8 +142,6 @@ class App extends Component {
             <Route exact path="/Login" render={(props) => <LoginInPage {...props} manager={false} token={this.props.storeToProps.loggedReducer.token} type={this.props.storeToProps.loggedReducer.managerORtenant} />}>></Route>
 
             <Route exact path="/Manager/Login" render={(props) => <ManagerSignInPage {...props} manager={true} token={this.props.storeToProps.loggedReducer.token} type={this.props.storeToProps.loggedReducer.managerORtenant} />}>></Route>
-
-
 
             {/*--------------------ROUTES USED FOR MANAGER--------------------*/}
             <PrivateRoute exact path="/Manager" 

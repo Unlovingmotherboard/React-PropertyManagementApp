@@ -93,7 +93,7 @@ class ManagerPage extends Component {
         <LoadingOverlay
           active={store.getState().loggedReducer.connectingToHerpestidae === true}
           spinner
-          text='Loading your content...'
+          // text='Loading your content...'
         >
           <Row>
           {this.props.properties.map(properties => (
