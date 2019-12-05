@@ -154,16 +154,18 @@ function TenantPropertyCard(props) {
                                 <MediaBox width="200">
                                 <img src={getImgFromBase64(props.tenantImgs)[0]}></img>
                                 </MediaBox>
+
+                                <Modal header="" trigger={<Button>Update Picture</Button>}>
+
+                            <input multiple type="file" name="file" onChange={(e) => uploadProfilePhoto(e, props)}></input>
+                            </Modal>
                                 </Row>
                                 :
                                 null
                             }
                             
 
-                            <Modal header="" trigger={<Button>Update Picture</Button>}>
-
-                            <input multiple type="file" name="file" onChange={(e) => uploadProfilePhoto(e, props)}></input>
-                            </Modal>
+                            
                         </Col>
                     </Row>
 

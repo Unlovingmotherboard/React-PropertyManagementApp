@@ -398,6 +398,7 @@ const CollectionNameController = {
 
         dbPropertyModels.findByIdAndUpdate({ _id: body.propertyID }, { $push: { tenantImgs: imgData } }, (err, fileUploadRes) => {
             if (err) {
+                console.log(err)
                 return res.send({
                     success: false,
                     message: "Error: Server Error!"
