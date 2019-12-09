@@ -7,16 +7,21 @@ As clientele grows so does the amount of data that must be managed. Property inf
 Manager Login
 
 Username: demoManager
+
 Password: demo
 
 Tenant Login
 
 (1) 
-Email: demo_tenant@demo.com
+
+Email: "demo_tenant@demo.com"
+
 Password: demo
 
 (2) 
-Email: demo_tenant2@demo.com
+
+Email: "demo_tenant2@demo.com"
+
 Password: demo
 
 [Try it out!](https://agile-refuge-23284.herokuapp.com/)
